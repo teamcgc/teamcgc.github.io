@@ -7,7 +7,7 @@ description: > # this means to ignore newlines until "baseurl:"
    collection of notes on the CGC cloud pilots.
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://teamcgc.github.io" # the base hostname & protocol for your site
-twitter_username: @NCICloud
+twitter_username: seandavis12
 github_username:  teamcgc
 
 # Build settings
