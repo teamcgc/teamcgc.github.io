@@ -1,3 +1,10 @@
+---
+layout: post
+title:  "Setup and begin to play with SevenBridges R API"
+date:   2016-01-12
+author: Sean Davis
+categories: sbg api
+---
 The [SevenBridges Cancer Genomics Cloud](https://cgc.sbgenomics.com/) offers an API for interacting with objects in their system. While this API is REST-based, a client library, in this case based in R, makes interacting with it even easier. [road2stat](https://twitter.com/road2stat) and collaborators have contributed the R package to [Bioconductor](https://bioconductor.org) where documentation and instructions for installation are available.
 
 The concept of an API for genomic data analysis is perhaps a bit foreign to folks. The idea, though, is pretty simple. The Cancer Genomics Cloud is running in the Amazon Web Services (AWS) cloud. A few simple functions are available to interact with files, tasks, workflows, etc. These functions can be called from anywhere using basic web technologies (HTTP, basically). By wrapping these web calls into R functions, the API can be easily programmed using R, but the major work is done on the cloud. Note that any environment that supports R can utilize this system. I am going to be doing this little example on my laptop, for example.
