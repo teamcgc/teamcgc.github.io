@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Steve Tsang" />
+
+<meta name="date" content="2016-05-18" />
+
+<title>Using Docker with Seven Bridges Genomics (SBG) CGC - Part 1</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">TeamCGC</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="tutorials.html">Tutorials</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Using Docker with Seven Bridges Genomics (SBG) CGC - Part 1</h1>
+<h4 class="author"><em>Steve Tsang</em></h4>
+<h4 class="date"><em>May 18, 2016</em></h4>
+
+</div>
+
+
+<p>This workflow decribes the installation of Docker and run a tool using a Docker image in the SBG CGC image registry.</p>
+<ol style="list-style-type: decimal">
+<li>Install Docker<br />
+</li>
+<li>Pull the Hello-world image from Docker and confirm installation<br />
+</li>
+<li>Create a tool in SBG-CGC using a Docker image and SBG User Interface</li>
+</ol>
+<p>References:<br />
+<a href="http://docs.cancergenomicscloud.org/docs/upload-your-docker-image" class="uri">http://docs.cancergenomicscloud.org/docs/upload-your-docker-image</a><br />
+<a href="https://docs.docker.com/engine/userguide/containers/dockerimages/" class="uri">https://docs.docker.com/engine/userguide/containers/dockerimages/</a></p>
+<p>To start, make sure you have an account with Seven Bridges CGC.</p>
+<div id="install-docker" class="section level3">
+<h3>Install Docker</h3>
+<p><a href="https://docs.docker.com/engine/installation/" class="uri">https://docs.docker.com/engine/installation/</a><br />
+There are many ways of installing Docker. Go to the url above for installation details.</p>
+<p>I installed Docker using “Homebrew” on my mac.</p>
+<pre><code>brew install docker
+brew install docker-machine</code></pre>
+</div>
+<div id="using-docker-with-sb-cgc" class="section level3">
+<h3>Using Docker with SB CGC</h3>
+<div id="run-docker" class="section level4">
+<h4>Run docker</h4>
+<p>-list docker machines<br />
+-start the machine called “dev”<br />
+-generate certificate so docker machine can talk to “dev”<br />
+-tell docker to talk to “dev” with the certificate<br />
+-connect shells to the machine “dev”</p>
+<pre><code>docker-machine ls
+
+#if you do not have host named &quot;dev&quot;
+docker-machine create --driver virtualbox dev
+#if you have a host named &quot;dev
+docker-machine start dev
+
+docker-machine regenerate-certs dev
+docker-machine env dev
+eval &quot;$(docker-machine env dev)&quot;</code></pre>
+<p>To stop/remove the host called “dev” - skip this for now</p>
+<pre><code>docker-machine stop dev
+docker-machine rm dev</code></pre>
+</div>
+</div>
+<div id="the-hello-world-example" class="section level3">
+<h3>The Hello-world example</h3>
+<p>To check your installation, pull and run the hello-world image from the docker respository.<br />
+You should see a “Hello from Docker” message, which confirms that docker is installed correctly.</p>
+<pre><code>docker pull hello-world
+docker images
+docker run hello-world</code></pre>
+</div>
+<div id="a-simple-example-creating-a-tool-in-ubuntu-using-the-cgc-image-registry" class="section level3">
+<h3>A simple example creating a tool in Ubuntu using the CGC image registry</h3>
+<p>This tutorial assumes that you are familiar with the basics of Seven Bridges CGC.<br />
+If not, please check out <a href="http://teamcgc.nci.nih.gov.s3-website-us-east-1.amazonaws.com/" class="uri">http://teamcgc.nci.nih.gov.s3-website-us-east-1.amazonaws.com/</a></p>
+<p>In this example, we will use the unix command “grep” to look for a string (“KX”) in a input FASTA file and print the line containing that string in an output file</p>
+<p>Input FASTA file content</p>
+<pre><code>&gt;gb:KU991811|Organism:Zika virus Brazil/2016/INMI1-Asian|Segment:null|Subtype:Asian|Host:Human
+MKNPKKKSGGFRIVNMLKRGVARVSPFGGLKRLPAGLLLGHGPI
+
+&gt;gb:KU955590|Organism:Zika virus Z16019-Asian|Segment:null|Subtype:Asian|Host:Human
+MKNPKKKSGGFRIVNMLKRGVARVSPFGGLKRLPAGLLLGHGPI
+
+&gt;gb:KU922960|Organism:Zika virus MEX/InDRE/Sm/2016-Asian|Segment:null|Subtype:Asian|Host:Human
+MKNPKKKSGGFRIVNMLKRGVARVSPFGGLKRLPAGLLLGHGPI
+
+&gt;gb:KX056898|Organism:Zika virus Zika virus/GZ02/2016-Asian|Segment:null|Subtype:Asian|Host:Human
+MKNPKKKSGGFRIVNMLKRGVARVSPFGGLKRLPAGLLLGHGPI
+
+&gt;gb:KU922923|Organism:Zika virus MEX/InDRE/Lm/2016-Asian|Segment:null|Subtype:Asian|Host:Human
+MKNPKKKSGGFRIVNMLKRGVARVSPFGGLKRLPAGLLLGHGPI
+
+&gt;gb:KU963574|Organism:Zika virus ZIKV/Homo sapiens/NGA/IbH-30656_SM21V1-V3/1968-West_African|Segment:null|Subtype:West_African|Host:Human
+MKNPKKKSGGFRIVNMLKRGVARVNPLGGLKRLPAGLLLGHGPI</code></pre>
+<p><br /> <br /> <br /> We will create a tool with the latest Ubuntu image in the CGC registry to search the above input file for a sequence header containing the string “KX”<br />
+<br /> <br /> <br /> <img src="../images/1.png" alt="image" /> Under “GENERAL” - Login to your CGC account<br />
+- Click on the “Apps” tab<br />
+- Click on “+Add app”<br />
+- Click on “Create Tool”<br />
+- Enter a name for the tool “ubuntu-grep”, Click “Create”<br />
+- Enter “ubuntu:latest” in the Docker Repository field<br />
+- Enter “grep” in the Base Command field<br />
+- Enter “output.txt”<br />
+This creates a tool that will pull the latest Ubuntu image from the CGC register, run the “grep” command and create an output file named “output.txt”<br />
+<br /> <br /> <br /> <img src="../images/2.png" alt="image" /> Under “INPUTS” - Create 3 input ports by clicking on the “+” sign. You want the resulting command line to look like -<br />
+“grep ‘string_pattern’ input_file &gt; output.txt”<br />
+grep (base command) is position 0 in the command line<br />
+‘string pattern’ is position 1 in the command line<br />
+input_file is position 2 in the command line<br />
+<br /> <br /> <br /> <img src="../images/3.png" alt="image" /> Under “OUTPUTS” - Create an output port by clicking on “+”<br />
+<br /> <br /> <br /> <img src="../images/4.png" alt="image" /> Under “TEST” You can enter different names different ports and see if the resulting command line looks right - Click on “SAVE” - Click on “RUN” to start a task with this tool <br /> <br /> <br /> <img src="../images/6.png" alt="image" /> Under “Set Input Data” - Click on “Pick files” to select the input file<br />
+<br /> <br /> <br /> <img src="../images/5.png" alt="image" /> Under “Define App Settings” - Enter the name of the output file and the string/pattern you want to search in the input file - Click “Run” and confirm <br /> <br /> <br /> <img src="../images/7.png" alt="image" /> Task being queued and waiting to run <br /> <br /> <br /> <img src="../images/8.png" alt="image" /> <br /> You should see the output file under “Files” In the output file (output.txt), you should see the header line containing the string “KX”</p>
+<pre><code>&gt;gb:KX056898|Organism:Zika virus Zika virus/GZ02/2016-Asian|Segment:null|Subtype:Asian|Host:Human</code></pre>
+</div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-82652476-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

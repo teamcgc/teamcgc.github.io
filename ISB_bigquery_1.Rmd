@@ -2,6 +2,8 @@
 title: "Querying TCGA data using BigQuery"
 author: "Sean Davis"
 date: "May 5, 2016"
+type: tutorial
+publish: true
 output: 
   BiocStyle::html_document
 vignette: >
