@@ -9,9 +9,11 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="Durga Addepalli" />
 
+<meta name="date" content="2016-06-16" />
 
-<title>Welcome to the teamcgc site.</title>
+<title>Kallisto-docker-container</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -197,29 +199,51 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Welcome to the teamcgc site.</h1>
+<h1 class="title toc-ignore">Kallisto-docker-container</h1>
+<h4 class="author"><em>Durga Addepalli</em></h4>
+<h4 class="date"><em>June 16, 2016</em></h4>
 
 </div>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<p><code>{r include=FALSE} knitr::opts_chunk$set(eval = TRUE)</code></p>
+<div id="introduction" class="section level2">
+<h2>INTRODUCTION</h2>
+<p>This guide will walk you through the steps to build a docker container for the tool “kallisto”. kallisto is a program for quantifying abundances of transcripts from RNA-Seq data, or more generally of target sequences using high-throughput sequencing reads.You can read more about [Kallisto] here:(<a href="https://pachterlab.github.io/kallisto/" class="uri">https://pachterlab.github.io/kallisto/</a>) (<a href="https://github.com/pachterlab/kallisto" class="uri">https://github.com/pachterlab/kallisto</a>)</p>
+<p>This tutorial assumes you have the docker installed and running.For documentation on docker installation refer to [Using Docker] (<a href="https://github.com/teamcgc/cgcR/blob/master/vignettes/UsingDocker.Part1.Rmd" class="uri">https://github.com/teamcgc/cgcR/blob/master/vignettes/UsingDocker.Part1.Rmd</a>)</p>
+<p>First lets copy the kallisto git repository from Github to any of your local folder!</p>
+<pre><code>git clone https://github.com/InSilicoDB/docker-kallisto.git kallisto-test
+
+## Move into the dicretory created
+
+cd kallisto-test
+
+##  Build a new image from the source code in this directory witht he name &#39;kallisto&#39; and version &#39;0&#39;
+docker build -t kallisto:v0 .
+
+## Once the build is done, you will need to get the Image id of the container and run the following command to be able to run kallisto
+docker run -it kallisto:v0
+
+## Push the image to docker hub
+docker push durgaadd/kallisto:v0
+</code></pre>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="index_files/figure-html/pressure-1.png" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+<div id="mounting-a-volume-mounitng-a-local-directory-onto-the-docker-container" class="section level2">
+<h2>Mounting a volume (mounitng a local directory onto the docker container)</h2>
+<p>To mount a local directory onto the docker container, we need to edit the Docker file and add the following RUN command</p>
+<pre><code>vi Dockerfile 
+RUN mkdir -p /tmp/files
+
+## Specify the local directory with input data files
+
+docker run -itv &lt;/Users/addepald/Documents/Data/&gt;:/mnt/files kallisto:v0</code></pre>
+<p>Now inside the container (looks like root@<containerID>….), you can check to see the files/directory</p>
+<pre><code>cd /mnt/files
+</code></pre>
+</div>
+<div id="related-tutorials" class="section level2">
+<h2>Related Tutorials</h2>
+<p><a href="https://docs.docker.com/v1.10/mac/step_one/">Install Docker Toolbox on Mac OS X</a></p>
 </div>
 
 
