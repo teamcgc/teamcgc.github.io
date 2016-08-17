@@ -8,4 +8,10 @@ navbar:
       href: about.html
     - text: "Tutorials"
       href: tutorials.html
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    include:
+      after_body: _footer.html
 output_dir: "."
