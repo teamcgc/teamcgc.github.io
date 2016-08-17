@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Steve Tsang" />
+
+<meta name="date" content="2016-06-26" />
+
+<title>Firecloud-Introduction</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/default.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="tutorials.html">tutorials</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Firecloud-Introduction</h1>
+<h4 class="author"><em>Steve Tsang</em></h4>
+<h4 class="date"><em>June 26, 2016</em></h4>
+
+</div>
+
+
+<p><br> <br> FireCloud, developed and maintained by the Broad Institute, is one of the three National Cancer Institute’s Cancer Genomics Cloud Pilots. <a href="https://software.broadinstitute.org/firecloud/" class="uri">https://software.broadinstitute.org/firecloud/</a>. This documment provides step-by-step description of creating a project on the FireCloud and upload RNA-seq (BAM) data. Before completing this tutorial, please set up an user account and a billing account with the instructions on the Firecloud’s website.</p>
+<div id="account-registration" class="section level4">
+<h4>Account registration</h4>
+<p><a href="https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-registration" class="uri">https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-registration</a></p>
+<pre><code>- Go to &lt;Portal.FireCloud.org&gt;
+- Click &quot;Register&quot;
+- Sign In with a Gmail or Google Apps Account (e.g., FireCloudUser@gmail.com). When asked to allow FireCloud to view your email address and basic profile info, etc., please click Allow. An explanation of these requests is posted in the Help Forum. You will be prompted to enter New User Registration information.
+- Please enter a Contact Email if it differs from your Gmail or Google Apps Account.
+- Click Register
+(After registering, you will see a message indicating your FireCloud account is inactive. A FireCloud administrator will activate your account within 24 hours.)
+</code></pre>
+</div>
+<div id="billing" class="section level4">
+<h4>Billing</h4>
+<p><a href="https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-google" class="uri">https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-google</a></p>
+<p>Here is some information on estimating costs in FireCloud from the development team.</p>
+<p>FireCloud runs on the Google Cloud Platform (GCP). All FireCloud costs (cloud storage, compute, data egress etc.) are ultimately billed via Google Billing Accounts. In order to be compatible with multiple cloud environments, institutional payment systems, and security requirements, the FireCloud interface does not directly display any part of the Google Billing Account interface.</p>
+<p>Instead, FireCloud will connect a Google Billing Account to an associated FireCloud Billing Project. When you are using FireCloud, it is these FireCloud Billing Projects that you will see in the interface, and to which FireCloud will charge your usage costs.</p>
+<p>In order to create or clone a new workspace in FireCloud, you must have access to at least one FireCloud Billing Project. To get started with a FireCloud Billing Project or Google Billing Account, you can check out this [Help Topic] <a href="https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-google" class="uri">https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-google</a> in the FireCloud User Guide.</p>
+<p><strong>Google Cloud Platform (GCP) Pricing Structure</strong></p>
+<ul>
+<li>Data upload to GCP is free.</li>
+<li>Data download from GCP is $120/TB with a 30% discount if over 10TB.<br />
+</li>
+<li>Compute costs about $0.05/core hour if less than 6.5GB RAM/core. More RAM will require running with more cores and will cost more.</li>
+<li>Disk space (used only while VM is running) costs $40/TB/Month of total quota reserved.</li>
+<li>General storage costs $26/TB/month.</li>
+</ul>
+<p><strong>Example</strong> - FireCloud testers ran a MuTect analysis on 1089 tumor/normal pairs - <strong>Compute</strong>: At $0.05/core hour and 23,305.4 core hours, the cost was $1,165.27 ($1.07 dollars/run) - <strong>Storage</strong>: There were 1089 output files with a total size of 0.001141 TB. At $26/TB/month, the storage/month was $0.03. Note: In this example, the pairs referred to BAMs that resided in the TCGA Open Access bucket, so no storage costs were incurred by the testers. - <strong>Download</strong>: To download these files, at $120/TB, the cost is $0.14. - Note: if the testers wanted to estimate costs, they could first run the analysis on a few pairs and calculate the core hours per run.</p>
+<p><strong>For more information, you can check out these links:</strong> - <a href="https://cloud.google.com/compute/pricing">Google Compute Pricing</a> - <a href="https://cloud.google.com/storage/pricing">Google Storage Pricing</a> - <a href="https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-google">FireCloud Projects and Billing Accounts</a></p>
+</div>
+<div id="firecloud-basics" class="section level4">
+<h4>FireCloud Basics</h4>
+<p><a href="https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-basics" class="uri">https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-basics</a></p>
+</div>
+<div id="login" class="section level4">
+<h4>Login</h4>
+<p><a href="https://portal.firecloud.org/" class="uri">https://portal.firecloud.org/</a><br />
+This tutorial is written using the Google Chrome as browser.</p>
+<pre><code>Click &quot;Sign In&quot;
+Sign in with your google credential
+(If you have multiple google accounts, log in in an incognito window by clicking File -&gt; New Incognito Window)</code></pre>
+</div>
+<div id="tcga-access" class="section level4">
+<h4>TCGA access</h4>
+<p>After you log in, your profile is displayed.<br />
+If you have an NIH account, link your NIH account.</p>
+<pre><code>Click &quot;Log-In to NIH to re-link your account&quot;
+Log in with your NIH credential
+(You will need to renew/re-link your account periodically)</code></pre>
+</div>
+<div id="create-and-share-new-workspace" class="section level4">
+<h4>Create and Share New Workspace</h4>
+<p><a href="https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-basics" class="uri">https://software.broadinstitute.org/firecloud/guide/topic?name=firecloud-basics</a> The FireCloud world is organized into workspaces.</p>
+<p>A workspace is a computational sandbox where you can organize genomic data and tools, and run analyses. Users can create, share, and clone workspaces. Workspaces hold:</p>
+<p>Data: pre-loaded or user-uploaded, open access or controlled access<br />
+Workflows: pre-loaded or user-created<br />
+Tools: pre-loaded or user-created<br />
+Results: from all runs, captured with provenance</p>
+<p>After you log in, your workspaces will be displayed. Workspaces that are TCGA access-controlled are labeled “Restricted.”</p>
+<p>To create a new workspace</p>
+<pre><code>Click on the blue botton on the upper-right-hand-corner &quot;Create New Workspace... +&quot;
+Make sure it is in the correct Google Project linked to the billing account (Refer to the Billing section above)
+Enter workspace name &quot;IRPworkshop&quot;
+Enter workspace description, if any.
+If this project will contain TCGA control data, check the box &quot;Workspace intended to contain NIH protected data.&quot; If not, leave it unchecked.
+Click &quot;Create Workspace&quot;</code></pre>
+<p>Once a workspace is created, you can share with other users. Under “Summary” tab, under “Workspace Owner”, you should see your gmail account listed. To share this workspace</p>
+<pre><code>Click &quot;(Sharing...)&quot; next to the gmail account
+A pop-up window will appear
+Click &quot;Add new +&quot;
+Enter user gmail address
+Set access level for the user (OWNER, WRITER, READER, NO ACCESS)
+Click &quot;Save&quot;</code></pre>
+</div>
+<div id="upload-my-data-to-the-firecloud" class="section level4">
+<h4>Upload my data to the FireCloud</h4>
+<p>To upload file,</p>
+<pre><code>Click on the line under &quot;Google Bucket&quot; which opens the Google Cloud Storage browser for this workspace
+You will be taken to the Google Cloud Platform
+Click &quot;Upload Files&quot;
+Select all the .bam and .bai files
+Click &quot;Open&quot;
+(Multiple file tends to only upload 3 files simoutaneously, repeat this process as necessary until all bam/bai files are uploaded and can be seen in the Google Console)</code></pre>
+<p>Once the files are uploaded to the Google console, you need to add them to the workspace.<br />
+To do this, you need two TSV files that describes the bam/bai files.<br />
+The first one, called “participants.tsv” has information about the participants and disease type.</p>
+<p>participant_id/sample_id fields are set arbitrarily and should be unique.<br />
+<br> participant.tsv</p>
+<pre><code>entity:participant_id   disease
+G28029                  BRCA
+G41676                  BRCA
+G41659                  LCLL
+G41707                  LCLL
+</code></pre>
+<p>The second one, called “sample.tsv” has information about the bam/bai files. sample.tsv has four columns, “sample_id”, “BAM_index”, “participant_id”, and “BAM.”<br />
+“sample_id” is arbitrarily set and should be unique.<br />
+“pariticpant_id” should match the participant_id in “participant.tsv” “BAM_index”/“BAM” are addresses where the bam/bai files are in the Google Cloud Storage.<br />
+The address should have the format “gs://[Google_Bucket]/[file_name]”<br />
+If your Google Bucket location is “fc-974b342c-b6f2-45e7-b901-xxxxxxxxxxxx” and file name is “NGS.bam”, your address in that column should be “gs://c-974b342c-b6f2-45e7-b901-xxxxxxxxxxxx/NGS.bam” For clarity, full file address is not listed below.</p>
+<p>sample.tsv</p>
+<pre><code>entity:sample_id  BAM_index     participant_id  BAM
+G28029_sample     bai_address1  G28029          bam_address1  
+G41676_sample     bai_address2  G41676          bam_address2  
+G41659_sample     bai_address3  G41659          bam_address3  
+G41707_sample     bai_address4  G41707          bam_address4  
+</code></pre>
+<p>Once your have the two TSV files created, go back to the workspace.</p>
+<pre><code>Click on &quot;Data&quot; tab
+Click &quot;Import Data...&quot;
+Click &quot;Importa from file&quot;
+Click &quot;Choose file...&quot;
+Select &quot;participant.tsv&quot; that you created above
+Click &quot;Open&quot;
+Click &quot;Upload&quot; and you should see a &quot;Upload Successful&quot; message
+
+Click &quot;Import Data...&quot;
+Click &quot;Importa from file&quot;
+Click &quot;Choose file...&quot;
+Select &quot;sample.tsv&quot; that you created above
+Click &quot;Open&quot;
+Click &quot;Upload&quot; and you should see a &quot;Upload Successful&quot; message
+
+</code></pre>
+<p>That’s it. You have uploaded the files to the workspace.</p>
+<p>When you click on the address for the bam files, you will see</p>
+<pre><code>Object: G28029_pe.Aligned.sortedByCoord.out.sorted.bam
+File size: 974.40 MBOpen (right-click to download)Warning: Downloading this file may incur a large data egress charge</code></pre>
+<p>Please note that uploading to the Firecloud is free, but you will be charged for downloading files.</p>
+<p>More to come later on running analysis with those uploaded files.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

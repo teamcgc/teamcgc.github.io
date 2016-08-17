@@ -1,0 +1,34 @@
+---
+title: "Tutorials"
+output: html_document
+---
+
+
+
+```{r headerparser,echo=FALSE,include=FALSE}
+library(knitr)
+opts_chunk$set(warning=FALSE,message=FALSE)
+library(yaml)
+headerparser = function(fname) {
+  lines = readLines(fname,n = 200)
+  xlines = grep('^---$',lines)
+  metadata = yaml::yaml.load(paste(lines[(xlines[1]+1):(xlines[2]-1)],collapse='\n'))
+  return(metadata)
+}
+
+# Non-tutorials
+nontutorials = c('about.Rmd','index.Rmd','tutorials.Rmd')
+
+```
+
+```{r rmdgetter,echo=FALSE,results='markup'}
+rmdfiles = list.files(pattern='*Rmd')
+tutorialfiles = setdiff(rmdfiles,nontutorials)
+metadataL = sapply(tutorialfiles,headerparser)
+titles = sapply(metadataL,function(x) {return(x$title)})
+urls = sprintf('[%s](%s)',
+              sub('\\.Rmd','.html',names(metadataL)),
+              sub('\\.Rmd','.html',names(metadataL)))
+library(DT)
+knitr::kable(data.frame(File=urls,Title=titles),row.names = FALSE)
+```

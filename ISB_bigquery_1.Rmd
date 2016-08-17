@@ -1,0 +1,124 @@
+---
+title: "Querying TCGA data using BigQuery"
+author: "Sean Davis"
+date: "May 5, 2016"
+output: 
+  BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{ISB BigQuery Part 1}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Background
+
+## What is this BigQuery?
+
+BigQuery is Google's managed SQL-like database system that is designed to run at PB scales.
+It allows storing, querying, and manipulating absolutely *huge* datasets with little more 
+effort (perhaps even less) than operating on a standard relational database. Cost is a 
+pay-as-you-go model, based on the amount of data processed. 
+
+## What is in BigQuery
+
+The [Institute for Systems Biology (ISB) Cancer Genomics Cloud](http://cgc.systemsbiology.net/) have
+loaded all of the TCGA level 3 data into BigQuery, enabling very facile slicing of data to 
+a very fine granularity. Bulk data in file form is still likely to be the most appropriate
+way to do large-scale data mining and inference, but for gene- or sample-based queries or 
+to join datasets in novel ways, BigQuery offers a possible solution.
+
+# Setup
+
+```{r init}
+library(bigrquery)
+```
+
+
+```{r listtables, eval=FALSE}
+bigrquery::list_tables("isb-cgc", "tcga_201510_alpha")
+```
+
+The first time you run this, you will be likely asked to login to a google billing account. This process will
+involve R kicking you over to a web browser (the first time) where you will need to login to your
+google cloud project. You will likely see this type of message....
+
+```
+Use a local file to cache OAuth access credentials between R sessions?
+1: Yes
+2: No
+
+Selection: Yes
+Adding ^\.httr-oauth$ to .Rbuildignore
+Waiting for authentication in browser...
+Press Esc/Ctrl + C to abort
+Authentication complete.
+```
+
+Assuming that you have set up an account with the ISB Cancer Genomics 
+Cloud Pilot, you can authorize R to access the account, and from then on will be able to operate without
+browser interaction.  
+
+```{r listtables2}
+bigrquery::list_tables("isb-cgc", "tcga_201510_alpha")
+```
+
+# The dplyr package for bigquery
+
+The [dplyr database tutorial](https://cran.r-project.org/web/packages/dplyr/vignettes/databases.html) discusses how to use `dplyr` with Google BigQuery. We are going to use that approach here to simplify 
+the interaction with the database. 
+
+```{r loaddplyr}
+library(dplyr)
+```
+
+Next, we set up a connection between `dplyr` and `bigquery`.  
+
+```{r connnect}
+my_billing = "isb-cgc-01-0006" # replace billing info here with your own
+bq = src_bigquery("isb-cgc", "tcga_201510_alpha", billing = my_billing)
+```
+
+The available tables in the `tcga_201510_alpha` database are given by simply showing the `bq` object.
+
+```{r bq_tables}
+bq
+```
+
+To work with a table from BigQuery using `dplyr`, we need to set up a `dplyr` table connection, one
+for each table that we wish to use. Here, I do that with the `Annotations` table.
+
+```{r bq_annotations}
+tbl_annot = tbl(bq,'Annotations')
+# and show the columns
+colnames(tbl_annot)
+```
+
+Our `dplyr` table object behaves essentially like a data.frame when using the `dplyr` style of 
+coding. 
+
+```{r bq_annot_head}
+head(tbl_annot)
+```
+
+# Example use cases
+
+```{r setuptables}
+tbl_mut = tbl(bq,'Somatic_Mutation_calls')
+```
+
+## How many variants of each type are present for each disease type?
+
+```{r mutcountsbystudy}
+mut_counts = tbl_mut %>% 
+  select(Study, Variant_Classification) %>% 
+  group_by(Study,Variant_Classification) %>% 
+  summarize(n = n()) %>% 
+  arrange(Study,Variant_Classification)
+```
+
+```{r 
+
+
+```{r sessionInfo}
+sessionInfo()
+```

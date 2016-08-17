@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Durga Addepalli" />
+
+
+<title>SBCGC-R-CreateWorkflow</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/default.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="tutorials.html">tutorials</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">SBCGC-R-CreateWorkflow</h1>
+<h4 class="author"><em>Durga Addepalli</em></h4>
+<h4 class="date"><em>May 2, 2016</em></h4>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>INTRODUCTION</h1>
+<p>This guide will get you started to use Seven Bridges API with the R client package sevenbridges, and guide you through the steps needed to run the “RNA-seq Alignment - STAR” and RNA-Seq alignment pipeline on the Seven Bridges Genomics platform.</p>
+<p>The following primary steps will be included:</p>
+<ul>
+<li>uploading files and setting the metadata;</li>
+<li>running the Picard SAMtoFASTQ commandline tool;</li>
+<li>running the RNA-seq Alignment on STAR;</li>
+<li>downloading the results.</li>
+</ul>
+</div>
+<div id="first-steps" class="section level1">
+<h1>First Steps</h1>
+<p>First download the [R markdown file] (<a href="https://raw.githubusercontent.com/tengfei/sevenbridges/master/vignettes/bioc-workflow.Rmd" class="uri">https://raw.githubusercontent.com/tengfei/sevenbridges/master/vignettes/bioc-workflow.Rmd</a>) of this page, so you can load it to yoru Rstudio or your favorite R IDE to run through all examples and tweak setup.</p>
+<pre class="r"><code>download.file(&quot;https://github.com/teamcgc/teamcgc.github.io/....SBCGC-R-CreateWorkflow.Rmd&quot;, destfile = &quot;~/bioc-workflow.Rmd&quot;)</code></pre>
+<div id="installing-the-package" class="section level2">
+<h2>Installing the Package</h2>
+<p>To download and install the sevenbridges package from Bioconductor, type the following commands in R:</p>
+<pre class="r"><code>source(&quot;http://bioconductor.org/biocLite.R&quot;)
+biocLite(&quot;sbgr&quot;)</code></pre>
+<p>Alternatively, you can install the cutting-edge development version of the sbgr package from GitHub:</p>
+<pre class="r"><code>if(!require(&quot;devtools&quot;, quietly = TRUE)){
+    install.packages(&quot;devtools&quot;) 
+}
+## Install from github for development version  
+source(&quot;http://bioconductor.org/biocLite.R&quot;)
+devtools::install_github(&quot;tengfei/sevenbridges&quot;, build_vignettes=TRUE, 
+  repos=BiocInstaller::biocinstallRepos(),
+  dependencies=TRUE)</code></pre>
+<p>After the installation you can always browser vignette</p>
+<pre class="r"><code>browseVignettes(package = &#39;sevenbridges&#39;)</code></pre>
+<div id="register-on-nci-cancer-genomics-cloud" class="section level3">
+<h3>Register on NCI Cancer Genomics Cloud</h3>
+<div class="figure">
+<img src="https://teamcgc.nci.nih.gov.s3.amazonaws.com/Images/CGC-Home.png" alt="cgc-home" />
+<p class="caption">cgc-home</p>
+</div>
+<p>You can find login/registration on NCI <a href="http://www.cancergenomicscloud.org/">Cancer Genomics Cloud homepage</a>, follow the <a href="http://docs.cancergenomicscloud.org/docs/sign-up-for-the-cgc">signup tutorial</a> if you have an ERA Commons or NIH account.</p>
+</div>
+<div id="get-your-authentifiation" class="section level3">
+<h3>Get your authentifiation</h3>
+<p>After you login, you can get your authentication under your account setting and ‘developer’ tab <a href="http://docs.cancergenomicscloud.org/docs/get-your-authentication-token">tutorial</a></p>
+</div>
+</div>
+<div id="quickstart" class="section level2">
+<h2>Quickstart</h2>
+<p>The final goal is make a workflow that accepts one file per sample (or two files for paired-end data), GTF file,genome Fasta files and generate aligned reads, de novo canonical junctions, non-canonical splices, and chimeric (fusion) transcripts.</p>
+<p>The final workflow looks like this, it’s composed of two tools: Picard SAM to Fastq command line tool and STAR alignment tool.</p>
+<div class="figure">
+<img src="https://teamcgc.nci.nih.gov.s3.amazonaws.com/Images/RNA-Seq_AlignmentSTAR.png" alt="quickstart-flow" />
+<p class="caption">quickstart-flow</p>
+</div>
+<div id="create-a-project-on-your-account-via-api-r-client" class="section level3">
+<h3>Create a project on your account via API R client</h3>
+<p>Now lets use the ‘sevenbridges’ packages you just installed to create a project.</p>
+<p>First step to do is to create an <em>Auth</em> object, almost everything starts from this object. SB-CGC API client follows a pattern like “Auth<span class="math inline">\(properties\)</span>action”.</p>
+<p>On the SB platform/CGC GUI, Auth is your account, and it contains projects, billing groups, users, project contains tasks, apps, files etc, so it’s easy to imagine your API call.</p>
+<p>To create Auth, just pass token and url, by default url is set to CGC.<br />
+To create an Auth object, run the command below and replace “fake_token” with your own token.</p>
+<pre class="r"><code>a &lt;- Auth(token = &quot;fake_token&quot;, url = &quot;https://cgc-api.sbgenomics.com/v2/&quot;)</code></pre>
+<p>Alternatively you can save your authentication cross different platforms in a configuration file called “.sbg.auth.yml” at home folder. This allow you to manage multiple users on multiple platforms.</p>
+<p>To create a project, you need to know your billing group id, cost related to this project will be charged from this billing group.</p>
+<pre class="r"><code>(b &lt;- a$billing())
+## a single billing group is shown</code></pre>
+<p>Now let’s create a new project called “IRP-CGC-with-R”, save it to a ‘p’ object for convenient usage for any call related to this project.</p>
+<pre class="r"><code>(p &lt;- a$project_new(&quot;IRP-CGC-with-R&quot;, 
+                    billing_group_id = b$id, 
+                    description = &quot;This project is for IRP-CGC R-Workshop&quot;))</code></pre>
+<p>Now check it on CGC, you will see a fresh new project is created.</p>
+<div class="figure">
+<img src="https://teamcgc.nci.nih.gov.s3.amazonaws.com/Images/NewProject.png" alt="NewProject" />
+<p class="caption">NewProject</p>
+</div>
+</div>
+<div id="list-all-projects" class="section level3">
+<h3>List all Projects</h3>
+<p>This call returns a list of all projects you are a member of. Each project’s project_id and URL on the CGC will be returned.</p>
+<pre class="r"><code>a$project()</code></pre>
+<p>Then if you want to list the projects owned by and accessible to a particular user, specify the owner argument. Each project’s ID and URL will be returned.</p>
+<pre class="r"><code>a$project(owner = &quot;Durga&quot;)</code></pre>
+<p>To get details about project(s), use detail = TRUE</p>
+<pre class="r"><code>a$project(detail = TRUE)</code></pre>
+</div>
+<div id="partial-match-project-name" class="section level3">
+<h3>Partial Match Project Name</h3>
+<p>SB CGC also supports partial name match in this interface. The first argument for the call is “name”, users can provide part of the name.</p>
+<pre class="r"><code>a$project(&quot;hello&quot;)</code></pre>
+</div>
+<div id="delete-a-project" class="section level3">
+<h3>Delete a Project</h3>
+<p>Only single project could be deleted by call <span class="math inline">\(delete(), so please pay attention to the returned object from a\)</span>project(), sometimes if you are using partial matching by name, it will return a list.</p>
+<p>To delete it, just call, but I will suggest you keep it for following tutorial : )</p>
+<pre class="r"><code>## remove it, not run
+a$project(&quot;IRP-CGC-with-R&quot;)$delete()
+## check
+## will delete all projects matcht the name
+delete(a$project(&quot;IRP-CGC-with-R_donnot_delete_me&quot;))</code></pre>
+</div>
+<div id="list-all-files" class="section level3">
+<h3>List all Files</h3>
+<p>This call returns a list of all files in a specified project that you can access. For each file, the call returns: * Its ID, * Its filename. The project is specified as a query parameter in the call. To list all the files in the current project:</p>
+<pre class="r"><code>p$file()</code></pre>
+<p>To list all files belonging to a project (Workshop Demo):</p>
+<pre class="r"><code>n &lt;- a$project(name = &quot;Workshop Demo&quot;)
+a$file(project = n$id)
+a$file(&quot;Readspergene&quot;, project = n$id, detail = TRUE)</code></pre>
+</div>
+<div id="copy-a-file-or-group-of-files" class="section level3">
+<h3>Copy a file or group of files</h3>
+<p>This call copies the specified file to a new project. Files retain their metadata when copied, but may be assigned new names in their target project.</p>
+<p>Note that Controlled Data files may not be copied to Open Data projects. To make this call, you should have copy permission within the project you are copying from.</p>
+<p>Let’s try to copy a file from CGC public files, the id you can tell from the url is “561e1b33e4b0aa6ec48167d7”</p>
+<p>You must provide</p>
+<ul>
+<li>id file id, or list/vector of files ids.</li>
+<li>project parameter: project id.</li>
+<li>name is optional, if omitted, use the same.</li>
+</ul>
+<p>To copy a single file</p>
+<pre class="r"><code>fid &lt;- &quot;56d5dd4be4b038b4e319be9b&quot;
+a$project(&quot;Workshop Demo&quot;)$file(id = fid)$copyTo(pid)</code></pre>
+<p>To Copy multiple files</p>
+<pre class="r"><code>fid &lt;- &quot;56d5dd4be4b0f636ff14cb69&quot;
+fid2 &lt;- &quot;56d5dd4be4b0ac987e61af8e&quot;
+pid &lt;- a$project(&quot;Workshop Demo&quot;)$id
+a$copyFile(c(fid, fid2), project = pid)
+p$file()</code></pre>
+</div>
+<div id="delete-files" class="section level3">
+<h3>Delete file(s)</h3>
+<p>Note: the delete action only works for single file now, make sure your file call returns a single file not a file list.</p>
+<pre class="r"><code>## Delete file
+a$project(&quot;IRP-CGC-with-R&quot;)$file()[[1]]$delete()
+## confirm the deletion
+a$project(&quot;IRP-CGC-with-R&quot;)$file()
+
+## Search for specific file by pattern match and delete, this can delete multiple files too.
+a$project(&quot;IRP-CGC-with-R&quot;)$file(&quot;Readspergene&quot;)$delete()</code></pre>
+</div>
+</div>
+<div id="lets-copy-some-apps-into-our-project-irp-cgc-with-r" class="section level2">
+<h2>Lets Copy some Apps into our Project IRP-CGC-with-R</h2>
+<div id="first-lets-search-for-the-apps" class="section level3">
+<h3>First lets search for the Apps</h3>
+<p>You can list all Apps available to you.</p>
+<pre class="r"><code>a$app()
+## or show details
+a$app(detail = TRUE)</code></pre>
+<p>You can serach by name, partial name or ID</p>
+<pre class="r"><code>## pattern match
+a$app(name = &quot;get_http&quot;)
+
+## unique id
+a$app(id = &quot;tsang/temp/txfr&quot;)
+
+## get a specific revision from an app
+a$app(id = aid, revision = 0)</code></pre>
+<p>To list all apps belong to one project use project argument</p>
+<pre class="r"><code>a$project(&quot;Workshop Demo&quot;)$app()
+
+## or alternatviely
+pid &lt;- a$project(&quot;Workshop Demo&quot;)$id
+a$app(project = pid)</code></pre>
+<p>To run this workflow, we need two apps in our project: * get-http_file * RNA-Seq Alignment STAR</p>
+</div>
+<div id="copy-these-apps-to-your-project" class="section level3">
+<h3>Copy these Apps to your Project</h3>
+<p>This call copies the specified app to the specified project. The app should be one in a project that you can access; this could be an app that has been uploaded to the CGC by a project member, or a publicly available app that has been copied to the project.</p>
+<p>Need two arguments * project: id character * name: optional, to re-name your app</p>
+<p>Copy app “get-http_file”</p>
+<pre class="r"><code>app.gets3fl &lt;- a$copyApp(id =  &quot;tsang/temp/txfr/2&quot;, project = pid, name = &quot;copytxfrv2&quot;)
+apid &lt;- app.gets3fl$id
+## check it is copied
+a$app(project = pid)</code></pre>
+<p>Search and copy the PUBLIC workflow RNA-Seq Alignment STAR</p>
+<pre class="r"><code>a$app(&quot;STAR&quot;, visibility = &quot;public&quot;, complete = TRUE)
+
+app.rnawf &lt;- a$copyApp(id =  &quot;djordje_klisic/public-apps-by-seven-bridges/rna-seq-alignment-star/3&quot;, project = pid, name = &quot;star-wfl-copy&quot;)
+
+rwid &lt;- app.rnawf$id
+## check it is copied
+a$app(project = pid)</code></pre>
+</div>
+<div id="upload-files-from-amazon-bucket-to-our-project" class="section level3">
+<h3>Upload files from Amazon bucket to our project</h3>
+<p>Here we demonstrate how to upload files directly from a S3 bucket to your CGC project. We will be using the Get_Http_file app to get files. ……</p>
+<p>To create a draft task, you need to call the task_add function from Project object. And you need to pass following arguments</p>
+<p>name: name for this task description: description for this task app: app id you have access to inputs: inputs list for this task</p>
+<pre class="r"><code>p$task_add(name = &quot;cptxfrv2testrun&quot;, 
+           description = &quot;Using get_http_file app to get files from S3 bucket&quot;, 
+           app=apid,
+           inputs = list(url = &quot;http://teamcgc.nci.nih.gov.s3-website-us-east-1.amazonaws.com/20160325SBGworkshop/FastqFiles/G28029_pe_1.fastq&quot;, ofname = &quot;G28029_pe_1.fastq&quot;))
+
+## confirm
+p$task(status = &quot;draft&quot;)</code></pre>
+</div>
+<div id="run-the-task" class="section level3">
+<h3>Run the task</h3>
+<p>This call runs (executes) the specified task. Only tasks whose status is “DRAFT” may be run.</p>
+<pre class="r"><code>tsk &lt;- p$task(status = &quot;draft&quot;)
+tsk$run()
+## run update without information just return latest information
+tsk$update()</code></pre>
+</div>
+<div id="run-the-rna-seq-alignment-star-workflow" class="section level3">
+<h3>Run the RNA-Seq Alignment STAR Workflow</h3>
+<p>Now we will run the RNA-seq Alignment STAR workflow (on which we worked in the last workshop) taking the BAM file uploaded from the previous task, as an input.</p>
+<p>WorkFlow Description:</p>
+<ol style="list-style-type: decimal">
+<li>What tools are inbuilt in this workflow?
+<ul>
+<li>Picard Sam to FastQ (Tool)</li>
+<li>SBG FASTQ Quality Detector: FASTQ Quality Scale Detector detects which quality encoding scheme was used in your reads and automatically enters the proper value in the “Quality Scale” metadata field.</li>
+<li>STAR Genome Generate: STAR Genome Generate is a tool that generates genome index files. One set of files should be generated per each genome/annotation combination. Once produced, these files could be used as long as genome/annotation combination stays the same. Also, STAR Genome Generate which produced these files and STAR aligner using them must be the same toolkit version.</li>
+<li>Picard SortSam: Picard SortSam sorts the input SAM or BAM. Input and output formats are determined by the file extension.</li>
+<li>RNA-seq Alignment - STAR (Workflow)</li>
+</ul></li>
+<li>What Input, Output and Parameter you want to run the workflow</li>
+</ol>
+<ul>
+<li>Input
+<ul>
+<li>GTF file</li>
+<li>BAM File</li>
+<li><p>Genome Fasta Files</p></li>
+<li>Output</li>
+<li>Aligned reads (BAM)</li>
+<li>Unmapped reads (fastQ)</li>
+<li>Splice Junctions</li>
+<li>Reads per Gene (TAB)</li>
+<li>Chimeric Junctions (Junction)</li>
+<li>Chimeric Alignments (SAM)</li>
+<li>Aligned Sorted by Coord (BAI)</li>
+<li>Log Files</li>
+<li>Unpaired (fastQ)</li>
+<li>First Strand (fastQ)</li>
+<li><p>Second Strand (fastQ)</p></li>
+</ul></li>
+</ul>
+</div>
+<div id="running-the-rna-seq-alignment-star-which-takes-a-fastq-file-as-input" class="section level3">
+<h3>Running the RNA-Seq Alignment STAR which takes a FASTQ file as input</h3>
+<pre class="r"><code>fastq1 &lt;- p$file(name = &quot;G28029_pe_1.fastq&quot;)
+fastq2 &lt;- p$file(name = &quot;G28029_pe_2.fastq&quot;)
+
+
+## Set metadata / Pairend info
+
+fastq1$setMeta(Paired_end = &quot;1&quot;)
+fastq2$setMeta(Paired_end = &quot;2&quot;)
+
+
+(fastq.in &lt;- p$file(name = &quot;G28029&quot;))
+(gtf.in &lt;- p$file(&quot;.gtf&quot;))
+(gtf.in1 = new(&#39;FilesList&#39;,listData=list(gtf.in)))
+(fasta.in &lt;- p$file(&quot;HG19_Broad_variant.fasta&quot;))
+
+## Check the input parameters&#39; Class
+## inputs : list(`sbg:y` = 195.083310633897, id = &quot;#sjdbGTFfile&quot;, type = list(&quot;null&quot;, list(items = &quot;File&quot;, type = &quot;array&quot;)), `sbg:x` = 160.499975860118, label = &quot;sjdbGTFfile&quot;)list(`sbg:y` = 323.74995018542, id = &quot;#fastq&quot;, `sbg:x` = 164.24999140203, label = &quot;fastq&quot;, type = list(list(items = &quot;File&quot;, type = &quot;array&quot;)), `sbg:includeInPorts` = TRUE)list(`sbg:y` = 469.999910578135, id = &quot;#genomeFastaFiles&quot;, type = list(&quot;File&quot;), `sbg:x` = 167.749960079791, label = &quot;genomeFastaFiles&quot;)
+
+class(fastq.in)
+class(gtf.in)
+class(fasta.in)
+
+tsk = p$task_add(name = &quot;rwfltest&quot;, 
+           description = &quot;Testing the RNA-seq STAR workflow&quot;, 
+           app = rwid,
+           inputs =  list(fastq = fastq.in, 
+                          genomeFastaFiles = fasta.in,
+                          sjdbGTFfile = list(gtf.in1)))
+
+
+tsk2 = p$task_add(name = &quot;rwfltest_SB:FL&quot;, 
+             description = &quot;Testing the RNA-seq STAR workflow&quot;, 
+            app = rwid,
+            inputs =  list(fastq = fastq.in, 
+                          genomeFastaFiles = fasta.in,
+                         sjdbGTFfile = sevenbridges:::FilesList(gtf.in)))
+
+## confirm
+p$task(status = &quot;draft&quot;)
+
+## Run the Task
+tsk1 &lt;- p$task(status = &quot;draft&quot;)
+tsk1$run()
+tsk1$update()
+tsk1$monitor()</code></pre>
+</div>
+<div id="running-the-rna-seq-alignment-star-which-takes-a-bam-file-as-input" class="section level3">
+<h3>Running the RNA-Seq Alignment STAR which takes a BAM file as input</h3>
+<pre class="r"><code>## Copy the app
+app.rnawfbam &lt;- a$copyApp(id = &quot;Durga/test1-tumor-normal/rna-seq-alignment-star-baseline-20160217&quot;, project = pid, name = &quot;star-wfl-inbam&quot;)
+rwbid &lt;- app.rnawfbam$id
+## check it is copied
+a$app(project = pid)
+
+## Run the app
+
+(bam.in &lt;- p$file(&quot;G41707Downsample_data_36_downsampled.bam&quot;))
+(gtf.in &lt;- p$file(&quot;.gtf&quot;))
+(fasta.in &lt;- p$file(&quot;HG19_Broad_variant.fasta&quot;))
+
+tsk3 = p$task_add(name = &quot;rwfl-inbamtest2-R&quot;, 
+           description = &quot;Testing the RNA-seq STAR workflow with input BAM file&quot;, 
+           app = rwbid,
+           inputs =  list(input_file = bam.in, 
+                          genomeFastaFiles = fasta.in,
+                          sjdbGTFfile = sevenbridges:::FilesList(gtf.in)))
+
+## confirm
+p$task(status = &quot;draft&quot;)
+
+## Run the Task
+tsk3 &lt;- p$task(status = &quot;draft&quot;)
+tsk3$run()
+tsk3$update()
+tsk3$monitor()</code></pre>
+</div>
+</div>
+<div id="batch---running-the-rna-seq-alignment-star-which-takes-multiple-bam-file-as-input" class="section level2">
+<h2>BATCH - Running the RNA-Seq Alignment STAR which takes multiple BAM file as input</h2>
+<pre class="r"><code>## Copy the app
+## another app for batch
+app.rnawfbamb &lt;- a$copyApp(id = &quot;Durga/rworkshop2/rna-seq-alignment-star-baseline-20160217&quot;, project = pid, name = &quot;star-wf-inbam-batch-UIcopy&quot;)
+
+rwbbid &lt;- app.rnawfbamb$id
+## check it is copied
+a$app(project = pid)
+
+
+## Run the app
+
+(bam.in &lt;- p$file(&quot;downsampled.bam&quot;))
+(gtf.in &lt;- p$file(&quot;.gtf&quot;))
+(fasta.in &lt;- p$file(&quot;HG19_Broad_variant.fasta&quot;))
+
+tsk3 = p$task_add(name = &quot;rwf-inbam_batch-R&quot;, 
+           description = &quot;Testing the RNA-seq STAR workflow with multiple input BAM files&quot;, 
+           app = rwbbid,
+           batch = batch(input = &quot;input_file&quot;),
+           inputs =  list(input_file = bam.in, 
+                          genomeFastaFiles = fasta.in,
+                          sjdbGTFfile = sevenbridges:::FilesList(gtf.in)))
+
+
+
+## confirm
+p$task(status = &quot;draft&quot;)
+
+## Run the Task
+tsk3 &lt;- p$task(status = &quot;draft&quot;)
+tsk3$run()
+tsk3$update()
+tsk3$monitor()</code></pre>
+</div>
+<div id="more-tutorials" class="section level2">
+<h2>More tutorials</h2>
+<p>After you install the package</p>
+<pre class="r"><code>browseVignettes(&quot;sevenbridges&quot;)</code></pre>
+<p>or on Bioconductor devel branch sevenbridges <a href="http://bioconductor.org/packages/3.3/bioc/html/sevenbridges.html">page</a></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
