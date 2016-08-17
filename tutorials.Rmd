@@ -29,6 +29,5 @@ titles = sapply(metadataL,function(x) {return(x$title)})
 urls = sprintf('[%s](%s)',
               sub('\\.Rmd','.html',names(metadataL)),
               sub('\\.Rmd','.html',names(metadataL)))
-library(DT)
 knitr::kable(data.frame(File=urls,Title=titles),row.names = FALSE)
 ```
