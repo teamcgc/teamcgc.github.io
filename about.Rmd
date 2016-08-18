@@ -1,30 +1,26 @@
 ---
-title: "about us"
-author: "Sean Davis"
-date: "August 17, 2016"
+title: "About TeamCGC"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+## What are we? 
 
-## R Markdown
+We are a small group who are working within NCI to evaluate the NCI cloud pilots.
+Our initial mandate was to use the NCI Intramural Research Program to 
+evaluate the NCI cloud pilots. Knowing that adoption of the NCI cloud pilots
+into researchers' workflows and practices would take significant training,
+we started to develop lightweight training and workshop materials, almost
+all of which are hosted here. We are also interested in interfacing with individual
+groups to adopt cloud technologies where appropriate in support of faster, better,
+more effective science. Finally, we have developed an online community based on 
+Slack that serves as a growing interest group and discussion forum on the growing
+ecosystem of cloud-enabled and interrelated technologies for genomics and other
+computational biology.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## Who are we?
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+- Sean Davis
+- Durga Addepalli
+- Steve Tsang
+- Dave Roberson
 
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
