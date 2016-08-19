@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Sean Davis" />
+
+
+<title>Wrap a basic tool and run on SBG platform with R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">TeamCGC</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="tutorials.html">Tutorials</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Wrap a basic tool and run on SBG platform with R</h1>
+<h4 class="author"><em>Sean Davis</em></h4>
+<h4 class="date"><em>May 2, 2016</em></h4>
+
+</div>
+
+
+<pre><code>## Loading required package: knitr</code></pre>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In this little tutorial, I am going to use the <code>sevenbridges</code> R package to develop a small tool that does a download of a URL to a file on the local disk. I will be wrapping that tool in a <a href="http://www.commonwl.org/">common workflow language</a> wrapper and then uploading the resulting tool into the <a href="https://cgc.sevenbridges.com/">SevenBridges</a> system. Finally, I will execute that tool on the cloud via an API call.</p>
+</div>
+<div id="background" class="section level1">
+<h1>Background</h1>
+<p>The <a href="https://cgc.sbgenomics.com">SevenBridges Cancer Genomics Cloud</a> is built around the concept of reproducible workflows based on the <a href="http://www.commonwl.org/">Common Workflow Language standard</a>. SevenBridges has an Application Programming Interface <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> that allows programmatic access and control of the platform. The combination of an industrial workflow engine running on cloud infrastructure, available tools and workflows, and a programming language like <a href="https://www.r-project.org">R</a>.</p>
+</div>
+<div id="preliminaries" class="section level1">
+<h1>Preliminaries</h1>
+<p>Before loading the <code>sevenbridges</code> library, it is useful (but not required) to set up a small credentials file called <code>.sbg.auth.yam</code> in your HOME directory. The file should look like:</p>
+<pre><code>cgc:
+  url: https://cgc-api.sbgenomics.com/v2/
+  user:
+    sdavis2:
+      token: YOUR_AUTH_TOKEN_FROM_SBG</code></pre>
+<p>On loading the library, this file will be read, allowing you to write code without including your AUTH_TOKEN in the actual code.</p>
+<pre class="r"><code>library(sevenbridges)</code></pre>
+</div>
+<div id="preparing-the-inputs-and-outputs" class="section level1">
+<h1>Preparing the inputs and outputs</h1>
+<p>The <a href="http://www.commonwl.org/draft-3/UserGuide.html">common workflow language</a> describes in some detail the details of the YAML file that describes a tool. The approach that is used in the <code>sevenbridges</code> package is to allow the developer to describe the tool using <code>R</code> code. In the next code block, I am describing the inputs and outputs of our very simple tool, a command-line R script.</p>
+<pre class="r"><code>in.lst = list(input(id=&#39;url&#39;,
+                    description=&#39;URL of the download&#39;,
+                    type=&#39;string&#39;,
+                    position=1),
+              input(id=&#39;ofname&#39;,
+                    description=&#39;output filename&#39;,
+                    type=&#39;string&#39;,
+                    position=2))
+
+out.lst = list(output(id=&#39;file&#39;,
+                      glob=(&#39;output/*&#39;)))</code></pre>
+</div>
+<div id="create-the-tool-wrapper" class="section level1">
+<h1>Create the tool wrapper</h1>
+<p>The tool that I am going to be wrapping is a simple script that uses the httr library to download a file from a URL to a local file. In order to ensure that the correct R environment is available where this is run, I will specify that the docker image <code>rocker/hadleyverse</code> is a requirement. Note that this docker image already has the necessary pieces needed to run the script–in particular, it has <code>httr</code> installed.</p>
+<p>I use the input list and output list from above in the <code>Tool</code> specification. The <code>fileDef</code> allows me to directly include the script from the disk; the location of the file is relative to the working directory.</p>
+<pre class="r"><code>fl = system.file(&quot;scripts/get_http_file.R&quot;, package=&#39;cgcR&#39;)
+library(readr)
+fd = fileDef(name=&#39;get_http_file.R&#39;,
+             content=read_file(fl))
+
+rbx &lt;- Tool(id = &quot;get_http_file&quot;, 
+            label = &quot;get_http_file&quot;,
+            hints = requirements(docker(pull = &quot;rocker/hadleyverse&quot;), 
+                                 cpu(1), mem(2000)),
+            requirements = requirements(fd),
+            baseCommand = &quot;Rscript get_http_file.R&quot;,
+            inputs = in.lst,
+            outputs = out.lst)</code></pre>
+</div>
+<div id="upload-the-script-to-sbg-and-run-an-example" class="section level1">
+<h1>Upload the script to SBG and run an example</h1>
+<p>The next few lines are the first to actually interact with the <a href="http://docs.sevenbridges.com/docs/the-api">SevenBridges API</a>. For the authentication, you will need to get a “developer token” and specify that in your call to <code>Auth()</code> below. I had already created a project called “temp-batch”. If you already have a project, specify that project <em>name</em> instead of mine. If you do not already have a project, you will need to create one via the API or the web interface first.</p>
+<pre class="r"><code>a &lt;- Auth(platform = &quot;cgc&quot;, username = &quot;sdavis2&quot;)
+p = a$project(&#39;mytestproject&#39;)
+app.txfr = p$app_add(&quot;txfr&quot;, rbx)</code></pre>
+<pre><code>## create new revision 5</code></pre>
+<pre class="r"><code>aid &lt;- app.txfr$id</code></pre>
+<p>Now, we can use the app that we just created to create a task; in other words, we will run the app. We need to specify the URL and FILE name.</p>
+<pre class="r"><code>tsk = p$task_add(name=&#39;transfer test&#39;,
+           description=&#39;transfer test desc&#39;,
+           app=aid,
+           inputs=list(
+              url=&#39;http://hgdownload.cse.ucsc.edu/goldenPath/hg38/bigZips/hg38.trf.bed.gz&#39;,
+              ofname=&#39;hg38.trf.bed.gz&#39;))</code></pre>
+<pre><code>## checking inputs ...</code></pre>
+<pre><code>## API: getting app input information ...</code></pre>
+<pre><code>## checking ...</code></pre>
+<pre><code>## check id match</code></pre>
+<pre><code>## Task drafting ...</code></pre>
+<pre><code>## Done</code></pre>
+<p>After submitting the task, we can list all tasks that remain in the <code>draft</code> state. These tasks are ready to run, but awaiting an official <code>run</code> command from us.</p>
+<pre class="r"><code>p$task(status=&#39;draft&#39;)</code></pre>
+<pre><code>## [[1]]
+## == Task ==
+## id : c3b5072a-c0ec-4b28-8c93-63f070528ac7
+## name : transfer test
+## project : sdavis2/mytestproject
+## [[2]]
+## == Task ==
+## id : 9aee85aa-110e-43c2-b37a-04d5e35aa10b
+## name : transfer test
+## project : sdavis2/mytestproject</code></pre>
+<p>Finally, we run the task.</p>
+<pre class="r"><code>tsk$run()</code></pre>
+<pre><code>## == Task ==
+## id : 9aee85aa-110e-43c2-b37a-04d5e35aa10b
+## name : transfer test
+## description : transfer test desc
+## status : QUEUED
+## app : sdavis2/mytestproject/txfr/5
+## type : v2
+## created_by : sdavis2
+## executed_by : sdavis2
+## start_time : 2016-08-19T00:41:59Z
+## execution_status:
+##   message : In queue
+## inputs:
+##   ofname : hg38.trf.bed.gz
+##   url : http://hgdownload.cse.ucsc.edu/goldenPath/hg38/bigZips/hg38.trf.bed.gz
+## outputs:
+## project : sdavis2/mytestproject
+## batch : FALSE</code></pre>
+</div>
+<div id="sessioninfo" class="section level1">
+<h1>sessionInfo()</h1>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 3.3.1 (2016-06-21)
+## Platform: x86_64-apple-darwin13.4.0 (64-bit)
+## Running under: OS X 10.11.6 (El Capitan)
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] readr_0.2.2        sevenbridges_1.3.6 knitr_1.14        
+## [4] dplyr_0.5.0        bigrquery_0.3.0   
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.5            rstudioapi_0.6         magrittr_1.5          
+##  [4] BiocGenerics_0.19.2    uuid_0.1-2             docopt_0.4.5          
+##  [7] R6_2.1.2               stringr_1.0.0          liftr_0.4             
+## [10] httr_1.2.1             tools_3.3.1            parallel_3.3.1        
+## [13] DBI_0.4-1              htmltools_0.3.5        lazyeval_0.2.0        
+## [16] openssl_0.9.4          yaml_2.1.13            assertthat_0.1        
+## [19] digest_0.6.10          tibble_1.0             tidyr_0.5.1           
+## [22] formatR_1.4            S4Vectors_0.11.13      objectSignals_0.10.2  
+## [25] rsconnect_0.4.3        curl_1.2               mime_0.5              
+## [28] evaluate_0.9           rmarkdown_1.0          stringi_1.1.1         
+## [31] objectProperties_0.6.5 stats4_3.3.1           jsonlite_1.0</code></pre>
+</div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-82652476-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

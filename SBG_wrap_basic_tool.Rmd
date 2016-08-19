@@ -2,8 +2,7 @@
 author: "Sean Davis"
 title:  "Wrap a basic tool and run on SBG platform with R"
 date:   "May 2, 2016"
-output: 
-  BiocStyle::html_document
+output: html_document
 vignette: >
   %\VignetteIndexEntry{SBG Wrapping and Running a Tool}
   %\VignetteEngine{knitr::rmarkdown}
@@ -110,7 +109,7 @@ If you do not already have a project, you will need to create one via the API or
 
 ```{r apiwork}
 a <- Auth(platform = "cgc", username = "sdavis2")
-p = a$project('temp-batch')
+p = a$project('mytestproject')
 app.txfr = p$app_add("txfr", rbx)
 aid <- app.txfr$id
 ```
