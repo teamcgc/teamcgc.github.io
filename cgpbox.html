@@ -347,6 +347,9 @@ div.tocify {
 
 <p><a href="https://github.com/cancerit/cgpbox" class="uri">https://github.com/cancerit/cgpbox</a></p>
 <p>This is a repacking of the cgpbox pipeline to allow for parellization via the rabix executor and descriptions of the tools included by commmon workflow language.</p>
+<p>
+<img src="images/cwlbox_wf_graph.png" width="1000" />
+</p>
 <p><br><br></p>
 <div id="cgp-bam-stats" class="section level1 tabset tabset-fade tabset-tabs">
 <h1>1. CGP Bam Stats</h1>
@@ -416,6 +419,12 @@ div.tocify {
 <div id="push-app-to-sbg-platform" class="section level3">
 <h3>Push app to sbg platform</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;bam-stats&quot;</span>, tool)</code></pre></div>
+<pre><code>## create new revision 8</code></pre>
+<pre><code>## == App ==
+## id : dave/rd172-kidney-lung-wgs-dev01/bam-stats/8
+## name : CGP bam stats
+## project : dave/rd172-kidney-lung-wgs-dev01
+## revision : 8</code></pre>
 </div>
 </div>
 </div>
@@ -426,7 +435,11 @@ div.tocify {
 <div id="base-command-1" class="section level2">
 <h2>base command</h2>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
-<span class="kw">bam_stats</span> -i <span class="ot">$BAM_MT_TMP</span> -o <span class="ot">$BAM_MT_TMP</span>.bas</code></pre></div>
+<span class="kw">compareBamGenotypes.pl</span> \
+-o /datastore/output/<span class="ot">$NAME_WT</span>/genotyped \
+-nb <span class="ot">$BAM_WT_TMP</span> \
+-j /datastore/output/<span class="ot">$NAME_WT</span>/genotyped/result.json \
+-tb <span class="ot">$BAM_MT_TMP</span> \</code></pre></div>
 <p><br><br><br><br></p>
 </div>
 <div id="docker-1" class="section level2">
@@ -448,7 +461,10 @@ div.tocify {
 <h3>Inputs</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either wildtype or tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-i&quot;</span>)
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;normal wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-nb&quot;</span>),
+  
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;mutant tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-tb&quot;</span>)
+  
 
 )</code></pre></div>
 </div>
@@ -462,11 +478,11 @@ div.tocify {
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
 <span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
   
-<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;bas&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam stat output&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;bam stat output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
-<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;result&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;genotype comparison&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;genotype comarison results&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
+<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.bas</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">result.json</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
   
 )</code></pre></div>
 </div>
@@ -476,17 +492,23 @@ div.tocify {
 <div id="tool-object-1" class="section level3">
 <h3>Tool object</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tool &lt;-<span class="st"> </span><span class="kw">Tool</span>(
-<span class="dt">id =</span> <span class="st">&quot;bam-stats&quot;</span>, 
-<span class="dt">label =</span> <span class="st">&quot;CGP bam stats&quot;</span>,
+<span class="dt">id =</span> <span class="st">&quot;genotype-check&quot;</span>, 
+<span class="dt">label =</span> <span class="st">&quot;compare bam genotypes&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;bam_stats&quot;</span>,
+<span class="dt">baseCommand =</span> <span class="st">&quot;compareBamGenotypes.pl -o ./ -j result.json&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
 </div>
 <div id="push-app-to-sbg-platform-1" class="section level3">
 <h3>Push app to sbg platform</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;bam-stats&quot;</span>, tool)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;genotype-check&quot;</span>, tool)</code></pre></div>
+<pre><code>## create new revision 1</code></pre>
+<pre><code>## == App ==
+## id : dave/rd172-kidney-lung-wgs-dev01/genotype-check/1
+## name : compare bam genotypes
+## project : dave/rd172-kidney-lung-wgs-dev01
+## revision : 1</code></pre>
 </div>
 </div>
 </div>
@@ -558,6 +580,12 @@ div.tocify {
 <div id="push-app-to-sbg-platform-2" class="section level3">
 <h3>Push app to sbg platform</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;bam-stats&quot;</span>, tool)</code></pre></div>
+<pre><code>## create new revision 9</code></pre>
+<pre><code>## == App ==
+## id : dave/rd172-kidney-lung-wgs-dev01/bam-stats/9
+## name : CGP bam stats
+## project : dave/rd172-kidney-lung-wgs-dev01
+## revision : 9</code></pre>
 </div>
 </div>
 </div>
@@ -641,6 +669,12 @@ div.tocify {
 <div id="push-app-to-sbg-platform-3" class="section level3">
 <h3>Push app to sbg platform</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;bam-stats&quot;</span>, tool)</code></pre></div>
+<pre><code>## create new revision 10</code></pre>
+<pre><code>## == App ==
+## id : dave/rd172-kidney-lung-wgs-dev01/bam-stats/10
+## name : CGP bam stats
+## project : dave/rd172-kidney-lung-wgs-dev01
+## revision : 10</code></pre>
 </div>
 </div>
 </div>
@@ -712,6 +746,12 @@ div.tocify {
 <div id="push-app-to-sbg-platform-4" class="section level3">
 <h3>Push app to sbg platform</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;bam-stats&quot;</span>, tool)</code></pre></div>
+<pre><code>## create new revision 11</code></pre>
+<pre><code>## == App ==
+## id : dave/rd172-kidney-lung-wgs-dev01/bam-stats/11
+## name : CGP bam stats
+## project : dave/rd172-kidney-lung-wgs-dev01
+## revision : 11</code></pre>
 </div>
 </div>
 </div>
@@ -783,6 +823,12 @@ div.tocify {
 <div id="push-app-to-sbg-platform-5" class="section level3">
 <h3>Push app to sbg platform</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;bam-stats&quot;</span>, tool)</code></pre></div>
+<pre><code>## create new revision 12</code></pre>
+<pre><code>## == App ==
+## id : dave/rd172-kidney-lung-wgs-dev01/bam-stats/12
+## name : CGP bam stats
+## project : dave/rd172-kidney-lung-wgs-dev01
+## revision : 12</code></pre>
 </div>
 </div>
 </div>
@@ -854,6 +900,12 @@ div.tocify {
 <div id="push-app-to-sbg-platform-6" class="section level3">
 <h3>Push app to sbg platform</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;bam-stats&quot;</span>, tool)</code></pre></div>
+<pre><code>## create new revision 13</code></pre>
+<pre><code>## == App ==
+## id : dave/rd172-kidney-lung-wgs-dev01/bam-stats/13
+## name : CGP bam stats
+## project : dave/rd172-kidney-lung-wgs-dev01
+## revision : 13</code></pre>
 </div>
 </div>
 </div>
@@ -925,6 +977,12 @@ div.tocify {
 <div id="push-app-to-sbg-platform-7" class="section level3">
 <h3>Push app to sbg platform</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;bam-stats&quot;</span>, tool)</code></pre></div>
+<pre><code>## create new revision 14</code></pre>
+<pre><code>## == App ==
+## id : dave/rd172-kidney-lung-wgs-dev01/bam-stats/14
+## name : CGP bam stats
+## project : dave/rd172-kidney-lung-wgs-dev01
+## revision : 14</code></pre>
 </div>
 </div>
 </div>
