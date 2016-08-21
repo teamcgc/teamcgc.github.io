@@ -8,15 +8,22 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
+
 <meta name="author" content="Sean Davis" />
 
 
 <title>Querying TCGA data using BigQuery</title>
 
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <link rel="stylesheet"
-      href="site_libs/highlight/default.css"
+      href="site_libs/highlight/textmate.css"
       type="text/css" />
 <script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
@@ -33,58 +40,187 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </script>
 
 
-<link rel="stylesheet" href="/Library/Frameworks/R.framework/Versions/3.3/Resources/library/BiocStyle/resources/html/bioconductor.css" type="text/css" />
 
-<script type="text/javascript">
-document.addEventListener("DOMContentLoaded", function() {
-  var links = document.links;  
-  for (var i = 0, linksLength = links.length; i < linksLength; i++)
-    if(links[i].hostname != window.location.hostname)
-      links[i].target = '_blank';
-});
-</script>
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
 
 </head>
 
 <body>
 
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
 
-<div id="header">
-<h1 class="title">Querying TCGA data using BigQuery</h1>
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">TeamCGC</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="tutorials.html">Tutorials</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Querying TCGA data using BigQuery</h1>
 <h4 class="author"><em>Sean Davis</em></h4>
 <h4 class="date"><em>May 5, 2016</em></h4>
+
 </div>
 
-<h1>Contents</h1>
-<div id="TOC">
-<ul>
-<li><a href="#background"><span class="toc-section-number">1</span> Background</a><ul>
-<li><a href="#what-is-this-bigquery"><span class="toc-section-number">1.1</span> What is this BigQuery?</a></li>
-<li><a href="#what-is-in-bigquery"><span class="toc-section-number">1.2</span> What is in BigQuery</a></li>
-</ul></li>
-<li><a href="#setup"><span class="toc-section-number">2</span> Setup</a></li>
-<li><a href="#the-dplyr-package-for-bigquery"><span class="toc-section-number">3</span> The dplyr package for bigquery</a></li>
-<li><a href="#example-use-cases"><span class="toc-section-number">4</span> Example use cases</a><ul>
-<li><a href="#how-many-variants-of-each-type-are-present-for-each-disease-type"><span class="toc-section-number">4.1</span> How many variants of each type are present for each disease type?</a></li>
-</ul></li>
-</ul>
-</div>
 
-<div id="background" class="section level1">
-<h1><span class="header-section-number">1</span> Background</h1>
-<div id="what-is-this-bigquery" class="section level2">
-<h2><span class="header-section-number">1.1</span> What is this BigQuery?</h2>
+<div id="what-is-bigquery" class="section level2">
+<h2>What is BigQuery?</h2>
 <p>BigQuery is Google’s managed SQL-like database system that is designed to run at PB scales. It allows storing, querying, and manipulating absolutely <em>huge</em> datasets with little more effort (perhaps even less) than operating on a standard relational database. Cost is a pay-as-you-go model, based on the amount of data processed.</p>
 </div>
 <div id="what-is-in-bigquery" class="section level2">
-<h2><span class="header-section-number">1.2</span> What is in BigQuery</h2>
+<h2>What is in BigQuery?</h2>
 <p>The <a href="http://cgc.systemsbiology.net/">Institute for Systems Biology (ISB) Cancer Genomics Cloud</a> have loaded all of the TCGA level 3 data into BigQuery, enabling very facile slicing of data to a very fine granularity. Bulk data in file form is still likely to be the most appropriate way to do large-scale data mining and inference, but for gene- or sample-based queries or to join datasets in novel ways, BigQuery offers a possible solution.</p>
 </div>
-</div>
 <div id="setup" class="section level1">
-<h1><span class="header-section-number">2</span> Setup</h1>
+<h1>Setup</h1>
 <pre class="r"><code>library(bigrquery)</code></pre>
-<pre class="r"><code>bigrquery::list_tables(&quot;isb-cgc&quot;, &quot;tcga_201510_alpha&quot;)</code></pre>
+<p>In BigQuery, a <code>dataset</code> is something like a <code>database</code> or a <code>schema</code> from mysql or postgresql. Listing them is straightforward using bigrquery directly.</p>
+<pre class="r"><code>bigrquery::list_datasets(&#39;isb-cgc&#39;)</code></pre>
+<pre><code>## [1] &quot;ccle_201602_alpha&quot;  &quot;genome_reference&quot;   &quot;platform_reference&quot;
+## [4] &quot;tcga_201510_alpha&quot;  &quot;tcga_201607_beta&quot;   &quot;tcga_cohorts&quot;      
+## [7] &quot;tcga_seq_metadata&quot;</code></pre>
 <p>The first time you run this, you will be likely asked to login to a google billing account. This process will involve R kicking you over to a web browser (the first time) where you will need to login to your google cloud project. You will likely see this type of message….</p>
 <pre><code>Use a local file to cache OAuth access credentials between R sessions?
 1: Yes
@@ -96,35 +232,55 @@ Waiting for authentication in browser...
 Press Esc/Ctrl + C to abort
 Authentication complete.</code></pre>
 <p>Assuming that you have set up an account with the ISB Cancer Genomics Cloud Pilot, you can authorize R to access the account, and from then on will be able to operate without browser interaction.</p>
-<pre class="r"><code>bigrquery::list_tables(&quot;isb-cgc&quot;, &quot;tcga_201510_alpha&quot;)</code></pre>
-<pre><code>## Auto-refreshing stale OAuth token.</code></pre>
-<pre><code>##  [1] &quot;Annotations&quot;            &quot;Biospecimen_data&quot;      
-##  [3] &quot;Clinical_data&quot;          &quot;Copy_Number_segments&quot;  
-##  [5] &quot;DNA_Methylation_betas&quot;  &quot;Protein_RPPA_data&quot;     
-##  [7] &quot;Somatic_Mutation_calls&quot; &quot;mRNA_BCGSC_HiSeq_RPKM&quot; 
-##  [9] &quot;mRNA_UNC_HiSeq_RSEM&quot;    &quot;miRNA_expression&quot;</code></pre>
+<pre class="r"><code>bigrquery::list_tables(&quot;isb-cgc&quot;, &quot;tcga_201607_beta&quot;)</code></pre>
+<pre><code>##  [1] &quot;Annotations&quot;               &quot;Biospecimen_data&quot;         
+##  [3] &quot;Clinical_data&quot;             &quot;Copy_Number_segments&quot;     
+##  [5] &quot;DNA_Methylation_betas&quot;     &quot;DNA_Methylation_chr1&quot;     
+##  [7] &quot;DNA_Methylation_chr10&quot;     &quot;DNA_Methylation_chr11&quot;    
+##  [9] &quot;DNA_Methylation_chr12&quot;     &quot;DNA_Methylation_chr13&quot;    
+## [11] &quot;DNA_Methylation_chr14&quot;     &quot;DNA_Methylation_chr15&quot;    
+## [13] &quot;DNA_Methylation_chr16&quot;     &quot;DNA_Methylation_chr17&quot;    
+## [15] &quot;DNA_Methylation_chr18&quot;     &quot;DNA_Methylation_chr19&quot;    
+## [17] &quot;DNA_Methylation_chr2&quot;      &quot;DNA_Methylation_chr20&quot;    
+## [19] &quot;DNA_Methylation_chr21&quot;     &quot;DNA_Methylation_chr22&quot;    
+## [21] &quot;DNA_Methylation_chr3&quot;      &quot;DNA_Methylation_chr4&quot;     
+## [23] &quot;DNA_Methylation_chr5&quot;      &quot;DNA_Methylation_chr6&quot;     
+## [25] &quot;DNA_Methylation_chr7&quot;      &quot;DNA_Methylation_chr8&quot;     
+## [27] &quot;DNA_Methylation_chr9&quot;      &quot;DNA_Methylation_chrX&quot;     
+## [29] &quot;DNA_Methylation_chrY&quot;      &quot;Protein_RPPA_data&quot;        
+## [31] &quot;Somatic_Mutation_calls&quot;    &quot;mRNA_BCGSC_GA_RPKM&quot;       
+## [33] &quot;mRNA_BCGSC_HiSeq_RPKM&quot;     &quot;mRNA_BCGSC_RPKM&quot;          
+## [35] &quot;mRNA_UNC_GA_RSEM&quot;          &quot;mRNA_UNC_HiSeq_RSEM&quot;      
+## [37] &quot;mRNA_UNC_RSEM&quot;             &quot;miRNA_BCGSC_GA_isoform&quot;   
+## [39] &quot;miRNA_BCGSC_GA_mirna&quot;      &quot;miRNA_BCGSC_HiSeq_isoform&quot;
+## [41] &quot;miRNA_BCGSC_HiSeq_mirna&quot;   &quot;miRNA_BCGSC_isoform&quot;      
+## [43] &quot;miRNA_BCGSC_mirna&quot;         &quot;miRNA_Expression&quot;</code></pre>
 </div>
 <div id="the-dplyr-package-for-bigquery" class="section level1">
-<h1><span class="header-section-number">3</span> The dplyr package for bigquery</h1>
+<h1>The dplyr package for bigquery</h1>
 <p>The <a href="https://cran.r-project.org/web/packages/dplyr/vignettes/databases.html">dplyr database tutorial</a> discusses how to use <code>dplyr</code> with Google BigQuery. We are going to use that approach here to simplify the interaction with the database.</p>
 <pre class="r"><code>library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
 <p>Next, we set up a connection between <code>dplyr</code> and <code>bigquery</code>.</p>
 <pre class="r"><code>my_billing = &quot;isb-cgc-01-0006&quot; # replace billing info here with your own
-bq = src_bigquery(&quot;isb-cgc&quot;, &quot;tcga_201510_alpha&quot;, billing = my_billing)</code></pre>
+bq = src_bigquery(&quot;isb-cgc&quot;, &quot;tcga_201607_beta&quot;, billing = my_billing)</code></pre>
 <p>The available tables in the <code>tcga_201510_alpha</code> database are given by simply showing the <code>bq</code> object.</p>
 <pre class="r"><code>bq</code></pre>
-<pre><code>## src:  bigquery [isb-cgc:tcga_201510_alpha]
+<pre><code>## src:  bigquery [isb-cgc:tcga_201607_beta]
 ## tbls: Annotations, Biospecimen_data, Clinical_data, Copy_Number_segments,
-##   DNA_Methylation_betas, miRNA_expression, mRNA_BCGSC_HiSeq_RPKM,
-##   mRNA_UNC_HiSeq_RSEM, Protein_RPPA_data, Somatic_Mutation_calls</code></pre>
+##   DNA_Methylation_betas, DNA_Methylation_chr1, DNA_Methylation_chr10,
+##   DNA_Methylation_chr11, DNA_Methylation_chr12, DNA_Methylation_chr13,
+##   DNA_Methylation_chr14, DNA_Methylation_chr15, DNA_Methylation_chr16,
+##   DNA_Methylation_chr17, DNA_Methylation_chr18, DNA_Methylation_chr19,
+##   DNA_Methylation_chr2, DNA_Methylation_chr20, DNA_Methylation_chr21,
+##   DNA_Methylation_chr22, DNA_Methylation_chr3, DNA_Methylation_chr4,
+##   DNA_Methylation_chr5, DNA_Methylation_chr6, DNA_Methylation_chr7,
+##   DNA_Methylation_chr8, DNA_Methylation_chr9, DNA_Methylation_chrX,
+##   DNA_Methylation_chrY, miRNA_BCGSC_GA_isoform, miRNA_BCGSC_GA_mirna,
+##   miRNA_BCGSC_HiSeq_isoform, miRNA_BCGSC_HiSeq_mirna, miRNA_BCGSC_isoform,
+##   miRNA_BCGSC_mirna, miRNA_Expression, mRNA_BCGSC_GA_RPKM,
+##   mRNA_BCGSC_HiSeq_RPKM, mRNA_BCGSC_RPKM, mRNA_UNC_GA_RSEM,
+##   mRNA_UNC_HiSeq_RSEM, mRNA_UNC_RSEM, Protein_RPPA_data,
+##   Somatic_Mutation_calls</code></pre>
 <p>To work with a table from BigQuery using <code>dplyr</code>, we need to set up a <code>dplyr</code> table connection, one for each table that we wish to use. Here, I do that with the <code>Annotations</code> table.</p>
 <pre class="r"><code>tbl_annot = tbl(bq,&#39;Annotations&#39;)
 # and show the columns
@@ -139,34 +295,56 @@ colnames(tbl_annot)</code></pre>
 <p>Our <code>dplyr</code> table object behaves essentially like a data.frame when using the <code>dplyr</code> style of coding.</p>
 <pre class="r"><code>head(tbl_annot)</code></pre>
 <pre><code>## Source:   query [?? x 14]
-## Database: bigquery [isb-cgc:tcga_201510_alpha]
+## Database: bigquery [isb-cgc:tcga_201607_beta]
 ## 
-##    annotationId annotationCategoryId
-##           &lt;int&gt;                &lt;int&gt;
-## 1         29663                  203
-## 2         29662                   25
-## 3         29661                   25
-## 4         29660                   29
-## 5         29658                   29
-## 6         29659                   29
-## ..          ...                  ...
-## Variables not shown: annotationCategoryName &lt;chr&gt;,
-##   annotationClassification &lt;chr&gt;, annotationNoteText &lt;chr&gt;, Study &lt;chr&gt;,
-##   itemTypeName &lt;chr&gt;, itemBarcode &lt;chr&gt;, AliquotBarcode &lt;chr&gt;,
-##   ParticipantBarcode &lt;chr&gt;, SampleBarcode &lt;chr&gt;, dateAdded &lt;chr&gt;,
-##   dateCreated &lt;chr&gt;, dateEdited &lt;chr&gt;.</code></pre>
+##    annotationId annotationCategoryId        annotationCategoryName
+##           &lt;int&gt;                &lt;int&gt;                         &lt;chr&gt;
+## 1           711                    1 Tumor tissue origin incorrect
+## 2           713                    1 Tumor tissue origin incorrect
+## 3           712                    1 Tumor tissue origin incorrect
+## 4          2908                    1 Tumor tissue origin incorrect
+## 5         19730                    1 Tumor tissue origin incorrect
+## 6         15108                    2          Tumor type incorrect
+## ..          ...                  ...                           ...
+## Variables not shown: annotationClassification &lt;chr&gt;, annotationNoteText
+##   &lt;chr&gt;, Study &lt;chr&gt;, itemTypeName &lt;chr&gt;, itemBarcode &lt;chr&gt;,
+##   AliquotBarcode &lt;chr&gt;, ParticipantBarcode &lt;chr&gt;, SampleBarcode &lt;chr&gt;,
+##   dateAdded &lt;chr&gt;, dateCreated &lt;chr&gt;, dateEdited &lt;chr&gt;.</code></pre>
 </div>
 <div id="example-use-cases" class="section level1">
-<h1><span class="header-section-number">4</span> Example use cases</h1>
+<h1>Example use cases</h1>
 <pre class="r"><code>tbl_mut = tbl(bq,&#39;Somatic_Mutation_calls&#39;)</code></pre>
 <div id="how-many-variants-of-each-type-are-present-for-each-disease-type" class="section level2">
-<h2><span class="header-section-number">4.1</span> How many variants of each type are present for each disease type?</h2>
+<h2>How many variants of each type are present for each disease type?</h2>
 <pre class="r"><code>mut_counts = tbl_mut %&gt;% 
   select(Study, Variant_Classification) %&gt;% 
   group_by(Study,Variant_Classification) %&gt;% 
   summarize(n = n()) %&gt;% 
-  arrange(Study,Variant_Classification)</code></pre>
-<p>```{r</p>
+  arrange(Study,Variant_Classification) %&gt;%
+  collect()</code></pre>
+<pre class="r"><code>mut_counts %&gt;% tidyr::spread(Variant_Classification,n)</code></pre>
+<pre><code>## Source: local data frame [33 x 24]
+## Groups: Study [33]
+## 
+##    Study 3&#39;UTR 5&#39;Flank 5&#39;UTR De_novo_Start_InFrame
+##    &lt;chr&gt; &lt;int&gt;   &lt;int&gt; &lt;int&gt;                 &lt;int&gt;
+## 1    ACC   186       2   171                    18
+## 2   BLCA  1243       3  1536                   114
+## 3   BRCA  2888       3  2011                    82
+## 4   CESC  2246       3  1916                    57
+## 5   CHOL    76      NA    78                     4
+## 6   COAD  2566       9  1988                   165
+## 7   DLBC   163      NA   148                     6
+## 8   ESCA  2211       2  1206                    40
+## 9    GBM   608       1   484                    54
+## 10  HNSC  1057       3  1203                    63
+## ..   ...   ...     ...   ...                   ...
+## Variables not shown: De_novo_Start_OutOfFrame &lt;int&gt;, Frame_Shift_Del
+##   &lt;int&gt;, Frame_Shift_Ins &lt;int&gt;, IGR &lt;int&gt;, In_Frame_Del &lt;int&gt;,
+##   In_Frame_Ins &lt;int&gt;, Intron &lt;int&gt;, lincRNA &lt;int&gt;, Missense_Mutation
+##   &lt;int&gt;, Nonsense_Mutation &lt;int&gt;, Nonstop_Mutation &lt;int&gt;, RNA &lt;int&gt;,
+##   Silent &lt;int&gt;, Splice_Site &lt;int&gt;, Start_Codon_Del &lt;int&gt;, Start_Codon_Ins
+##   &lt;int&gt;, Start_Codon_SNP &lt;int&gt;, Stop_Codon_Del &lt;int&gt;, Stop_Codon_Ins &lt;int&gt;.</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>## R version 3.3.1 (2016-06-21)
 ## Platform: x86_64-apple-darwin13.4.0 (64-bit)
@@ -176,22 +354,67 @@ colnames(tbl_annot)</code></pre>
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
 ## 
 ## other attached packages:
-## [1] dplyr_0.5.0       bigrquery_0.3.0   BiocStyle_2.0.2   yaml_2.1.13      
-## [5] rmarkdown_0.9.6.9
+##  [1] yaml_2.1.13                knitr_1.13                
+##  [3] BiocStyle_2.0.2            dplyr_0.5.0               
+##  [5] VariantAnnotation_1.18.1   Rsamtools_1.25.0          
+##  [7] Biostrings_2.41.4          XVector_0.13.2            
+##  [9] SummarizedExperiment_1.3.6 Biobase_2.33.0            
+## [11] GenomicRanges_1.25.9       GenomeInfoDb_1.8.1        
+## [13] IRanges_2.7.11             S4Vectors_0.11.7          
+## [15] BiocGenerics_0.19.1        bigrquery_0.3.0           
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.5     digest_0.6.9    assertthat_0.1  R6_2.1.2       
-##  [5] jsonlite_1.0    DBI_0.4-1       formatR_1.4     magrittr_1.5   
-##  [9] evaluate_0.9    httr_1.2.1      stringi_1.1.1   lazyeval_0.2.0 
-## [13] curl_0.9.7      tools_3.3.1     stringr_1.0.0   rsconnect_0.4.3
-## [17] htmltools_0.3.5 openssl_0.9.4   knitr_1.13      tibble_1.0</code></pre>
+##  [1] Rcpp_0.12.5             highr_0.6              
+##  [3] formatR_1.4             liftr_0.3              
+##  [5] GenomicFeatures_1.24.3  objectProperties_0.6.5 
+##  [7] bitops_1.0-6            tools_3.3.1            
+##  [9] sevenbridges_1.2.4      zlibbioc_1.19.0        
+## [11] biomaRt_2.29.2          digest_0.6.9           
+## [13] docopt_0.4.5            uuid_0.1-2             
+## [15] BSgenome_1.41.2         RSQLite_1.0.0          
+## [17] jsonlite_1.0            evaluate_0.9           
+## [19] tibble_1.0              DBI_0.4-1              
+## [21] rstudioapi_0.6          curl_0.9.7             
+## [23] rtracklayer_1.33.8      httr_1.2.1             
+## [25] stringr_1.0.0           R6_2.1.2               
+## [27] AnnotationDbi_1.35.3    XML_3.98-1.4           
+## [29] BiocParallel_1.7.4      rmarkdown_0.9.6.9      
+## [31] tidyr_0.5.1             magrittr_1.5           
+## [33] GenomicAlignments_1.9.4 objectSignals_0.10.2   
+## [35] htmltools_0.3.5         rsconnect_0.4.3        
+## [37] assertthat_0.1          stringi_1.1.1          
+## [39] lazyeval_0.2.0          openssl_0.9.4          
+## [41] RCurl_1.95-4.8</code></pre>
 </div>
 </div>
 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-82652476-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

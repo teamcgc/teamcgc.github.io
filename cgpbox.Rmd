@@ -1,0 +1,82 @@
+---
+title: 'CGPBox Pipeline'
+author: '---'
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---  
+
+
+```{r include = FALSE}
+require(rmarkdown); require(knitr);
+
+options(max.print = "99", knitr.duplicate.label = 'allow'); opts_knit$set(width = 99)
+opts_chunk$set(cache=FALSE, tidy=FALSE)
+
+```
+
+https://github.com/cancerit/cgpbox
+
+This is a repacking of the cgpbox pipeline to allow for parellization via the rabix executor and descriptions of the tools included by commmon workflow language.
+
+<br><br>
+
+# 1. CGP Bam Stats {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/bam_stats/bam_stats.Rmd'}
+
+
+```
+
+# 2. CGP Genotype Check {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/genotype_check/genotype_check.Rmd'}
+
+
+```
+
+# 3. Verify Bams {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/verify_bams/verify_bams.Rmd'}
+
+
+```
+
+# 4. ASCAT {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/ascat/ascat.Rmd'}
+
+
+```
+
+# 5. CGP Pindel {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/pindel/pindel.Rmd'}
+
+
+```
+
+# 6. CaVEMan {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/caveman/caveman.Rmd'}
+
+
+```
+
+# 7. Brass {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/brass/brass.Rmd'}
+
+
+```
+
+# 8. CGP Annotate VCF {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/cgp_annotate_vcf/cgp_annotate_vcf.Rmd'}
+
+
+```
+

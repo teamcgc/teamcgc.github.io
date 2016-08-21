@@ -1,11 +1,21 @@
-name: "my-website"
+name: "teamcgc"
 navbar:
-  title: "My Website"
-  left:
+  title: "TeamCGC"
+  right:
     - text: "Home"
       href: index.html
     - text: "About"
       href: about.html
     - text: "Tutorials"
       href: tutorials.html
+    - text: "cwl pipelines"
+      menu:
+        - text: "cgpbox"
+          href: cgpbox.html
+output:
+  html_document:
+    theme: cosmo
+    highlight: pygments
+  include:
+      after_body: _footer.html
 output_dir: "."
