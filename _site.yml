@@ -1,17 +1,21 @@
 name: "teamcgc"
 navbar:
   title: "TeamCGC"
-  left:
+  right:
     - text: "Home"
       href: index.html
     - text: "About"
       href: about.html
     - text: "Tutorials"
       href: tutorials.html
+    - text: "cwl pipelines"
+      menu:
+        - text: "cgpbox"
+          href: cgpbox.html
 output:
   html_document:
     theme: cosmo
-    highlight: textmate
-    include:
+    highlight: pygments
+  include:
       after_body: _footer.html
 output_dir: "."
