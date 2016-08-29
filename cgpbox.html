@@ -346,7 +346,7 @@ div.tocify {
 
 
 <p><a href="https://github.com/cancerit/cgpbox" class="uri">https://github.com/cancerit/cgpbox</a></p>
-<p>This is a repacking of the cgpbox pipeline to allow for parellization via the rabix executor and descriptions of the tools included by commmon workflow language.</p>
+<p>This is a repackaging of the cgpbox pipeline to allow for parellization via the rabix executor and descriptions of the tools included by commmon workflow language.</p>
 <p>
 <img src="images/cwlbox_wf_graph.png" width="1000" />
 </p>
@@ -354,7 +354,7 @@ div.tocify {
 <div id="cgp-bam-stats" class="section level1 tabset tabset-fade tabset-tabs">
 <h1>1. CGP Bam Stats</h1>
 <hr>
-<p>First step in the cgpbox pipeline. Generates useful stats on the wildtype and mutant tumour bams that will be used in the pipeline.</p>
+<p>Generates useful stats on the wildtype and mutant tumour bams that will be used in the pipeline.</p>
 <div id="base-command" class="section level2">
 <h2>base command</h2>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
@@ -366,21 +366,13 @@ div.tocify {
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="arguments" class="section level2">
-<h2>arguments</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">list</span>(
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either wildtype or tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-i&quot;</span>)
-
-)</code></pre></div>
-</div>
 <div id="app-ports" class="section level2 tabset tabset-fade tabset-tabs">
 <h2>App ports</h2>
 <div id="inputs" class="section level3">
 <h3>Inputs</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either wildtype or tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-i&quot;</span>)
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either wildtype or tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-i&quot;</span>)
 
 )</code></pre></div>
 </div>
@@ -411,7 +403,7 @@ div.tocify {
 <span class="dt">id =</span> <span class="st">&quot;bam-stats&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;CGP bam stats&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;bam_stats&quot;</span>,
+<span class="dt">baseCommand =</span> <span class="st">&quot;bam_stats -o bam_file.bas&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
@@ -425,7 +417,6 @@ div.tocify {
 <div id="cgp-genotype-check" class="section level1 tabset tabset-fade tabset-tabs">
 <h1>2. CGP Genotype Check</h1>
 <hr>
-<p>First step in the cgpbox pipeline. Generates useful stats on the wildtype and mutant tumour bams that will be used in the pipeline.</p>
 <div id="base-command-1" class="section level2">
 <h2>base command</h2>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
@@ -441,7 +432,7 @@ div.tocify {
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="arguments-1" class="section level2">
+<div id="arguments" class="section level2">
 <h2>arguments</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">list</span>(
   
@@ -455,11 +446,10 @@ div.tocify {
 <h3>Inputs</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;normal wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-nb&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;normal wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-nb&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>)),
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;mutant tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-tb&quot;</span>)
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;mutant tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-tb&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>))
   
-
 )</code></pre></div>
 </div>
 <div id="outputs-1" class="section level3">
@@ -473,10 +463,10 @@ div.tocify {
 <span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
   
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;result&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;genotype comparison&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;genotype comarison results&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
-<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
+<span class="dt">description =</span> <span class="st">&quot;genotype comarison results&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
+<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#tumour_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">result.json</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">genotype_check/*.json</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
   
 )</code></pre></div>
 </div>
@@ -489,7 +479,7 @@ div.tocify {
 <span class="dt">id =</span> <span class="st">&quot;genotype-check&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;compare bam genotypes&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;compareBamGenotypes.pl -o ./ -j result.json&quot;</span>,
+<span class="dt">baseCommand =</span> <span class="st">&quot;compareBamGenotypes.pl -o genotype_check -j genotype_check/genotype_check_result.json&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
@@ -503,26 +493,15 @@ div.tocify {
 <div id="verify-bams" class="section level1 tabset tabset-fade tabset-tabs">
 <h1>3. Verify Bams</h1>
 <hr>
-<p>First step in the cgpbox pipeline. Generates useful stats on the wildtype and mutant tumour bams that will be used in the pipeline.</p>
 <div id="base-command-2" class="section level2">
 <h2>base command</h2>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
-<span class="co">#if normal</span>
-
-<span class="kw">verifyBamHomChk.pl</span> 
+<span class="kw">verifyBamHomChk.pl</span>
+<span class="kw">-b</span> [bam file]
+<span class="kw">-a</span> [tumour only - from ASCAT tool - called copynumber.caveman.csv ] 
 <span class="kw">-d</span> 25
-<span class="kw">-o</span> /datastore/output/<span class="ot">$NAME_WT</span>/contamination
-<span class="kw">-b</span> <span class="ot">$BAM_WT_TMP</span>
-<span class="kw">-j</span> /datastore/output/<span class="ot">$NAME_WT</span>/contamination/result.json
-
-<span class="co">#if tumor</span>
-
-<span class="kw">verifyBamHomChk.pl</span> 
-<span class="kw">-d</span> 25
-<span class="kw">-o</span> /datastore/output/<span class="ot">$NAME_MT</span>/contamination
-<span class="kw">-b</span> <span class="ot">$BAM_MT_TMP</span>
-<span class="kw">-a</span> /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/ascat/<span class="ot">${NAME_MT}</span>.copynumber.caveman.csv
-<span class="kw">-j</span> /datastore/output/<span class="ot">$NAME_MT</span>/contamination/result.json</code></pre></div>
+<span class="kw">-o</span> ./
+<span class="kw">-j</span> result.json</code></pre></div>
 <p><br><br><br><br></p>
 </div>
 <div id="docker-2" class="section level2">
@@ -530,22 +509,15 @@ div.tocify {
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="arguments-2" class="section level2">
-<h2>arguments</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">list</span>(
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either wildtype or tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-b&quot;</span>)
-
-)</code></pre></div>
-</div>
 <div id="app-ports-2" class="section level2 tabset tabset-fade tabset-tabs">
 <h2>App ports</h2>
 <div id="inputs-2" class="section level3">
 <h3>Inputs</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either wildtype or tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-b&quot;</span>)
-
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either normal wildtype or tumour mutatantbam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-b&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>)),
+  
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;ascat_adjusted_copynumber_csv&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;ascat_adjusted_copynumber_csv&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;ascat adjusted for caveman copynumber csv&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;{if ($job.inputs.bam.metadata.sample_type == </span><span class="ch">\&quot;</span><span class="st">Tumor</span><span class="ch">\&quot;</span><span class="st">){return $self.path;}}&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-a&quot;</span>)
 
 )</code></pre></div>
 </div>
@@ -563,7 +535,7 @@ div.tocify {
 <span class="dt">description =</span> <span class="st">&quot;verify bam results&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">result.json</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">verify_bam/verify_bam_result.json</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
   
 )</code></pre></div>
 </div>
@@ -572,11 +544,20 @@ div.tocify {
 <h2>Define Tool Object and Push to Platform</h2>
 <div id="tool-object-2" class="section level3">
 <h3>Tool object</h3>
+<p>need to add some logic for -a adjusted copy number because it is only needed if it is the tumour sample.</p>
+<pre><code>-a /datastore/output/${NAME_MT}_vs_${NAME_WT}/ascat/${NAME_MT}.copynumber.caveman.csv
+
+arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, valueFrom = list(&quot;\&quot;if $self.metadata.sample_type = \&quot;Tumor\&quot; then \&quot;&quot;))),
+
+{if ($job.inputs.bam.metadata.sample_type == &quot;Tumor&quot;) {command_line_arg = &quot;ab.copynumber.caveman.csv&quot;;} else {command_line_arg = &quot;&quot;;} return command_line_arg}
+
+{if ($job.inputs.bam.metadata.sampleType == &quot;Tumor&quot;) {command_line_arg = &quot;ab.copynumber.caveman.csv&quot;;} else {command_line_arg = &quot;&quot;;} return command_line_arg}
+</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tool &lt;-<span class="st"> </span><span class="kw">Tool</span>(
 <span class="dt">id =</span> <span class="st">&quot;verify_bam&quot;</span>, 
-<span class="dt">label =</span> <span class="st">&quot;verify_bams&quot;</span>,
+<span class="dt">label =</span> <span class="st">&quot;verify_bam&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;bam_stats&quot;</span>,
+<span class="dt">baseCommand =</span> <span class="st">&quot;verifyBamHomChk.pl -d 25 -o verify_bam -j verify_bam/verify_bam_result.json&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
@@ -594,19 +575,26 @@ div.tocify {
 <p><a href="https://github.com/cancerit/ascatNgs" class="uri">https://github.com/cancerit/ascatNgs</a></p>
 <div id="base-command-3" class="section level2">
 <h2>base command</h2>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="kw">ascat.pl</span>
-<span class="kw">-o</span> /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/ascat \
--t <span class="ot">$BAM_MT_TMP</span> \
--n <span class="ot">$BAM_WT_TMP</span> \
--sg <span class="ot">$REF_BASE</span>/ascat/SnpGcCorrections.tsv \
--r genome.fa
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
+<span class="kw">ascat.pl</span>
+<span class="kw">-t</span> [tumour bam]
+<span class="kw">-n</span> [normal wildtype bam]
+<span class="kw">-r</span> [genome reference]
+<span class="kw">-c</span> [cpu number]
+<span class="kw">-rs</span> <span class="st">&#39;HUMAN&#39;</span> 
+<span class="kw">-ra</span> GRCh37 
+<span class="kw">-pr</span> WGS
+<span class="kw">-pl</span> ILLUMINA
+<span class="kw">-sg</span> ascat_SnpGcCorrections.tsv
 <span class="kw">-q</span> 20
 <span class="kw">-g</span> L
-<span class="kw">-rs</span> <span class="st">&#39;$SPECIES&#39;</span>
-<span class="kw">-ra</span> <span class="ot">$ASSEMBLY</span>
-<span class="kw">-pr</span> <span class="ot">$PROTOCOL</span>
-<span class="kw">-pl</span> ILLUMINA
-<span class="kw">-c</span> <span class="ot">$CPU</span></code></pre></div>
+<span class="kw">-o</span> ./ascat_output</code></pre></div>
+</div>
+<div id="prep-ascat-for-caveman" class="section level2">
+<h2>Prep ASCAT for caveman</h2>
+<pre><code>
+&amp;&amp; perl -ne &#39;@F=(split q{,}, $_)[1,2,3,4]; $F[1]-1; print join(&quot;\t&quot;,@F).&quot;\n&quot;;&#39; &lt; copynumber.caveman.csv &gt; ./normal_cn.bed &amp;&amp; perl -ne &#39;@F=(split q{,}, $_)[1,2,3,6]; $F[1]-1; print join(&quot;\t&quot;,@F).&quot;\n&quot;;&#39; &lt; copynumber.caveman.csv &gt; ./tumour_cn.bed
+</code></pre>
 <p><br><br><br><br></p>
 </div>
 <div id="docker-3" class="section level2">
@@ -614,32 +602,19 @@ div.tocify {
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="arguments-3" class="section level2">
-<h2>arguments</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">list</span>(
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;normal wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-n&quot;</span>),
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;mutant tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>),
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;genome reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-r&quot;</span>),
-
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;snp_gc_corrections&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;SNP GC corrections file&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;SNP GC corrections file&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-sg&quot;</span>)
-  
-)</code></pre></div>
-</div>
 <div id="app-ports-3" class="section level2 tabset tabset-fade tabset-tabs">
 <h2>App ports</h2>
 <div id="inputs-3" class="section level3">
 <h3>Inputs</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;normal wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-n&quot;</span>),
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;mutant tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;mutant tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>),
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;genome reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-r&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;normal wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-n&quot;</span>),
 
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;snp_gc_corrections&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;SNP GC corrections file&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;SNP GC corrections file&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-sg&quot;</span>)
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;genome reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.fai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-r&quot;</span>),
+
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;cgpbox_reference_files&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;cgpbox_reference_files&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;extracted reference files&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>)
 
 )</code></pre></div>
 </div>
@@ -653,14 +628,30 @@ div.tocify {
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
 <span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
   
-<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;cnv_outputs&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;cnv outputs&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;cnv_outputs&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;ascat_statistics&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;ascat_statistics&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;ascat_statistics&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.csv</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">ascat_output/*.samplestatistics.txt</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
   
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_copy_number_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_copy_number_bed&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;tumour_copy_number_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
+<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#tumour_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
+<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">tumour_cn.bed</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
+  
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;normal_copy_number_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_copy_number_bed&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;normal_copy_number_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
+<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
+<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">normal_cn.bed</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+
 )</code></pre></div>
 </div>
+</div>
+<div id="add-on-scripts" class="section level2 tabset tabset-fade tabset-tabs">
+<h2>Add on scripts</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">prep_for_caveman_sh =<span class="st"> </span><span class="kw">fileDef</span>(<span class="dt">name =</span> <span class="st">&quot;prep_for_caveman.sh&quot;</span>, <span class="dt">content =</span> <span class="kw">read_file</span>(<span class="st">&quot;prep_for_caveman.sh&quot;</span>))</code></pre></div>
 </div>
 <div id="define-tool-object-and-push-to-platform-3" class="section level2 tabset tabset-fade tabset-tabs">
 <h2>Define Tool Object and Push to Platform</h2>
@@ -670,9 +661,16 @@ div.tocify {
 <span class="dt">id =</span> <span class="st">&quot;ASCAT&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;ASCAT&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;ascat.pl -o ./&quot;</span>,
+<span class="dt">requirements =</span> <span class="kw">requirements</span>(prep_for_caveman_sh),
+
+<span class="dt">baseCommand =</span> <span class="st">&quot;CPU=`grep -c ^processor /proc/cpuinfo` &amp;&amp; ascat.pl -c $CPU -rs Human -ra NCBI37 -pr WGS -pl ILLUMINA -sg ascat_SnpGcCorrections.tsv -q 20 -g L -o ascat_output&quot;</span>,
+
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
+
 <span class="dt">inputs =</span> inputs,
+  
+<span class="dt">arguments =</span> <span class="kw">CCBList</span>(<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">99</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&amp;&amp; sh prep_for_caveman.sh</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))), 
+  
 <span class="dt">outputs =</span> outputs)</code></pre></div>
 </div>
 <div id="push-app-to-sbg-platform-3" class="section level3">
@@ -690,21 +688,21 @@ div.tocify {
 <h2>base command</h2>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
 <span class="kw">pindel.pl</span>
-<span class="kw">-o</span> /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/pindel
-<span class="kw">-t</span> <span class="ot">$BAM_MT_TMP</span>
-<span class="kw">-n</span> <span class="ot">$BAM_WT_TMP</span>
-<span class="kw">-r</span> <span class="ot">$REF_BASE</span>/genome.fa
-<span class="kw">-s</span> <span class="ot">$REF_BASE</span>/pindel/simpleRepeats.bed.gz
-<span class="kw">-f</span> <span class="ot">$REF_BASE</span>/pindel/genomicRules.lst
-<span class="kw">-g</span> <span class="ot">$REF_BASE</span>/pindel/indelCoding.bed.gz
-<span class="kw">-u</span> <span class="ot">$REF_BASE</span>/pindel/pindel_np.gff3.gz
-<span class="kw">-sf</span> <span class="ot">$REF_BASE</span>/pindel/softRules.lst
-<span class="kw">-b</span> <span class="ot">$REF_BASE</span>/brass/HiDepth.bed.gz
-<span class="kw">-st</span> <span class="ot">$PROTOCOL</span>
-<span class="kw">-as</span> <span class="ot">$ASSEMBLY</span>
-<span class="kw">-sp</span> <span class="st">&#39;$SPECIES&#39;</span>
+<span class="kw">-t</span> [tumour mutant bam]
+<span class="kw">-n</span> [normal wildtype bam]
+<span class="kw">-r</span> [genome reference]
+<span class="kw">-c</span> <span class="ot">$CPU</span>
+<span class="kw">-sp</span> HUMAN 
+<span class="kw">-as</span> GRCh37 
+<span class="kw">-st</span> WGS
 <span class="kw">-e</span> NC_007605,hs37d5,GL%
-<span class="kw">-c</span> <span class="ot">$CPU</span></code></pre></div>
+<span class="kw">-s</span> pindel_simpleRepeats.bed.gz
+<span class="kw">-f</span> pindel_genomicRules.lst
+<span class="kw">-g</span> pindel_human.GRCh37.indelCoding.bed.gz
+<span class="kw">-u</span> pindel_pindel_np.gff3.gz
+<span class="kw">-sf</span> pindel_softRules.lst
+<span class="kw">-b</span> brass-ucscHiDepth_0.01_mrg1000_no_exon_coreChrs.bed.gz
+<span class="kw">-o</span> ./pindel_output</code></pre></div>
 <p><br><br><br><br></p>
 </div>
 <div id="docker-4" class="section level2">
@@ -718,16 +716,15 @@ div.tocify {
 <h3>Inputs</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-n&quot;</span>),
 
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>),
 
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-r&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-n&quot;</span>),
 
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;pindel_reference_archive&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;pindel_reference_archive&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;pindel_reference_archive&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-pin&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.fai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-r&quot;</span>),
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;hi_depth_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;hi_depth_bed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;hi_depth_bed from brass references&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-b&quot;</span>)
-  
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;cgpbox_reference_files&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;cgpbox_reference_files&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;extracted reference files&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>)
+
 )</code></pre></div>
 </div>
 <div id="outputs-4" class="section level3">
@@ -740,11 +737,17 @@ div.tocify {
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
 <span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
   
-<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;pindel_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;pindel_bed&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;pindel_bed outputkl&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
-<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;pindel_germline_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;pindel_germline_bed&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;pindel_germline_bed output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
+<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#tumour_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.germline.bed</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">pindel_output/*.germline.bed</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
+
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;pindel_flagged_vcf&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;pindel_flagged_vcf&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;pindel_flagged_vcf&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
+<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#tumour_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
+<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">pindel_output/*.flagged.vcf.gz</span><span class="ch">\&quot;</span><span class="st">&quot;</span>), <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.tbi&quot;</span>))
   
 )</code></pre></div>
 </div>
@@ -757,7 +760,7 @@ div.tocify {
 <span class="dt">id =</span> <span class="st">&quot;pindel&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;pindel&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;pindel.pl&quot;</span>,
+<span class="dt">baseCommand =</span> <span class="st">&quot;CPU=`grep -c ^processor /proc/cpuinfo` &amp;&amp; pindel.pl -c $CPU -sp HUMAN -as GRCh37 -st WGS -e NC_007605,hs37d5,GL% -s pindel_simpleRepeats.bed.gz -f pindel_genomicRules.lst -g pindel_human.GRCh37.indelCoding.bed.gz -u pindel_pindel_np.gff3.gz -sf pindel_softRules.lst -b brass-ucscHiDepth_0.01_mrg1000_no_exon_coreChrs.bed.gz -o pindel_output&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
@@ -771,26 +774,27 @@ div.tocify {
 <div id="caveman" class="section level1 tabset tabset-fade tabset-tabs">
 <h1>6. CaVEMan</h1>
 <hr>
-<p>CaVEMan actually needs the reference index and not the reference (?). But we can attach the reference index as a secondary file to the reference and find the path that way.</p>
+<p>CaVEMan actually needs the reference index and not the reference (?). But we can attach the reference index as a secondary file to the reference and find the path that way. Need to ask Erik about this.</p>
 <p>It uses outputs from Pindel and ASCAT.</p>
 <div id="base-command-5" class="section level2">
 <h2>base command</h2>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
 <span class="kw">caveman.pl</span>
-<span class="kw">-r</span> <span class="ot">$REF_BASE</span>/genome.fa.fai \
--ig <span class="ot">$REF_BASE</span>/caveman/HiDepth.tsv \
--b <span class="ot">$REF_BASE</span>/caveman/flagging \
--u <span class="ot">$REF_BASE</span>/caveman \
--s <span class="st">&#39;$SPECIES&#39;</span> \
--sa <span class="ot">$ASSEMBLY</span> \
--t <span class="ot">$CPU</span> \
--st genomic \
--in /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/pindel/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>.germline.bed  \
--tc <span class="ot">$TMP</span>/tum.cn.bed \
--nc <span class="ot">$TMP</span>/norm.cn.bed \
--tb <span class="ot">$BAM_MT_TMP</span> \
--nb <span class="ot">$BAM_WT_TMP</span> \
--o /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/caveman</code></pre></div>
+<span class="kw">-tb</span> [tumour mutant bam]
+<span class="kw">-nb</span> [normal wildtype bam]
+<span class="kw">-r</span> [genome reference index - genome.fa.fai]
+<span class="kw">-in</span> [pindel .germline.bed]
+<span class="kw">-tc</span> [tum.cn.bed - from ASCAT]
+<span class="kw">-nc</span> [norm.cn.bed - from ASCAT]
+<span class="kw">-t</span> <span class="ot">$CPU</span>
+<span class="kw">-s</span> HUMAN 
+<span class="kw">-sa</span> GRCh37 
+<span class="kw">-st</span> WGS
+<span class="kw">-st</span> genomic
+<span class="kw">-ig</span> caveman_ucscHiDepth_0.01_merge1000_no_exon.tsv
+<span class="kw">-b</span> ./ 
+<span class="kw">-u</span> ./
+<span class="kw">-o</span> caveman_output</code></pre></div>
 <p><br><br><br><br></p>
 </div>
 <div id="docker-5" class="section level2">
@@ -798,7 +802,7 @@ div.tocify {
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="arguments-4" class="section level2">
+<div id="arguments-1" class="section level2">
 <h2>arguments</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">list</span>(
   
@@ -811,16 +815,18 @@ div.tocify {
 <div id="inputs-5" class="section level3">
 <h3>Inputs</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;normal wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-n&quot;</span>),
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;mutant tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>),
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;genome reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-r&quot;</span>),
 
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;pindel_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;pindel_bed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;pindel_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-in&quot;</span>)
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;mutant tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-tb&quot;</span>),
 
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;normal wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-nb&quot;</span>),
+  
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.fai&quot;</span>), <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;$self.path+</span><span class="ch">\&quot;</span><span class="st">.fai</span><span class="ch">\&quot;</span><span class="st">&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-r&quot;</span>),
 
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;pindel_germline_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;pindel_germline_bed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;pindel_germline_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-in&quot;</span>),
+  
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;ascat_tumour_cn_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;ascat_tumour_cn_bed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;ascat_tumour_cn_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-tc&quot;</span>),
+  
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;ascat_normal_cn_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;ascat_normal_cn_bed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;ascat_normal_cn_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-nc&quot;</span>)
 
 )</code></pre></div>
 </div>
@@ -838,7 +844,7 @@ div.tocify {
 <span class="dt">description =</span> <span class="st">&quot;caveman_output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.bedpe</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">caveman_output/*.bedpe</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
   
 )</code></pre></div>
 </div>
@@ -851,7 +857,7 @@ div.tocify {
 <span class="dt">id =</span> <span class="st">&quot;CaVEMan&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;CaVEMan&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;caveman.pl&quot;</span>,
+<span class="dt">baseCommand =</span> <span class="st">&quot;CPU=`grep -c ^processor /proc/cpuinfo` &amp;&amp; caveman.pl -t $CPU -s HUMAN -sa GRCh37 -st WGS -st genomic -ig caveman_ucscHiDepth_0.01_merge1000_no_exon.tsv -b ./ -u ./ -o caveman_output&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
@@ -860,6 +866,22 @@ div.tocify {
 <h3>Push app to sbg platform</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;CaVEMan&quot;</span>, tool)</code></pre></div>
 </div>
+</div>
+<div id="notes" class="section level2">
+<h2>notes</h2>
+<p>needs these 3 inputs from other tools</p>
+<pre><code>-in /datastore/output/${NAME_MT}_vs_${NAME_WT}/pindel/${NAME_MT}_vs_${NAME_WT}.germline.bed  \
+-tc $TMP/tum.cn.bed \
+-nc $TMP/norm.cn.bed \</code></pre>
+<p>Prep ASCAT for caveman</p>
+<pre><code>echo -e &quot;CaVEMan prep: `date`&quot;
+
+set -x
+ASCAT_CN=&quot;/datastore/output/${NAME_MT}_vs_${NAME_WT}/ascat/$NAME_MT.copynumber.caveman.csv&quot;
+perl -ne &#39;@F=(split q{,}, $_)[1,2,3,4]; $F[1]-1; print join(&quot;\t&quot;,@F).&quot;\n&quot;;&#39; &lt; $ASCAT_CN &gt; $TMP/norm.cn.bed
+perl -ne &#39;@F=(split q{,}, $_)[1,2,3,6]; $F[1]-1; print join(&quot;\t&quot;,@F).&quot;\n&quot;;&#39; &lt; $ASCAT_CN &gt; $TMP/tum.cn.bed
+set +x
+</code></pre>
 </div>
 </div>
 <div id="brass" class="section level1 tabset tabset-fade tabset-tabs">
@@ -870,26 +892,26 @@ div.tocify {
 <div id="base-command-6" class="section level2">
 <h2>base command</h2>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
-<span class="kw">brass.pl</span> 
-<span class="kw">-j</span> 4 
+<span class="kw">brass.pl</span>
+<span class="kw">-t</span> [tumour bam]
+<span class="kw">-n</span> [normal wildtype bam]
+<span class="kw">-g</span> [genome reference]
+<span class="kw">-ss</span> [ascat *.samplestatistics.txt array]
+<span class="kw">-j</span> 4
 <span class="kw">-k</span> 4 
 <span class="kw">-c</span> <span class="ot">$CPU</span>
-<span class="kw">-d</span> <span class="ot">$REF_BASE</span>/brass/HiDepth.bed.gz
-<span class="kw">-f</span> <span class="ot">$REF_BASE</span>/brass/brass_np.groups.gz
-<span class="kw">-g</span> <span class="ot">$REF_BASE</span>/genome.fa
-<span class="kw">-s</span> <span class="st">&#39;$SPECIES&#39;</span> 
-<span class="kw">-as</span> <span class="ot">$ASSEMBLY</span> 
-<span class="kw">-pr</span> <span class="ot">$PROTOCOL</span> 
+<span class="kw">-s</span> HUMAN 
+<span class="kw">-as</span> GRCh37 
+<span class="kw">-pr</span> WGS
 <span class="kw">-pl</span> ILLUMINA
-<span class="kw">-g_cache</span> <span class="ot">$REF_BASE</span>/vagrent/vagrent.cache.gz
-<span class="kw">-vi</span> <span class="ot">$REF_BASE</span>/brass/viral.1.1.genomic.fa
-<span class="kw">-mi</span> <span class="ot">$REF_BASE</span>/brass/all_ncbi_bacteria.20150703
-<span class="kw">-b</span> <span class="ot">$REF_BASE</span>/brass/500bp_windows.gc.bed.gz
-<span class="kw">-ct</span> <span class="ot">$REF_BASE</span>/brass/CentTelo.tsv
-<span class="kw">-t</span> <span class="ot">$BAM_MT_TMP</span>
-<span class="kw">-n</span> <span class="ot">$BAM_WT_TMP</span>
-<span class="kw">-ss</span> /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/ascat/*.samplestatistics.txt
-<span class="kw">-o</span> /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/brass</code></pre></div>
+<span class="kw">-d</span> brass-ucscHiDepth_0.01_mrg1000_no_exon_coreChrs.bed.gz
+<span class="kw">-f</span> brass-brass_np.groups.gz
+<span class="kw">-g_cache</span> vagrent_Homo_sapiens.GRCh37.75.vagrent.cache.gz
+<span class="kw">-vi</span> brass-viral.1.1.genomic.fa
+<span class="kw">-mi</span> brass-all_ncbi_bacteria.20150703
+<span class="kw">-b</span> brass-hs37d5_500bp_windows.gc.bed.gz
+<span class="kw">-ct</span> brass-Human.GRCh37.CentTelo.tsv
+<span class="kw">-o</span> ./brass_output</code></pre></div>
 <p><br><br><br><br></p>
 </div>
 <div id="docker-6" class="section level2">
@@ -897,7 +919,7 @@ div.tocify {
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="arguments-5" class="section level2">
+<div id="arguments-2" class="section level2">
 <h2>arguments</h2>
 <p>No additional arguments</p>
 </div>
@@ -908,15 +930,15 @@ div.tocify {
 <p>Need to add more inputs here.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;hi_depth_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;hi_depth_bed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;hi_depth_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-d&quot;</span>),
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;brass_np_groups&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;brass_np_groups&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;brass_np_groups&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-f&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>),
 
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-g&quot;</span>),
-  
 <span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-n&quot;</span>),
 
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>)
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-g&quot;</span>),
+  
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;ascat_sample_statistics&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;ascat_sample_statistics&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;ascat_sample_statistics&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-ss&quot;</span>),
+  
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;cgpbox_reference_files&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;cgpbox_reference_files&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;extracted reference files&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>)
   
 )</code></pre></div>
 </div>
@@ -930,11 +952,11 @@ div.tocify {
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
 <span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
   
-<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;brass_output&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;brass_output&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;brass_output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;brass_output&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;brass_sv_output&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;brass output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.bed</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">brass_output/*</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
   
 )</code></pre></div>
 </div>
@@ -947,7 +969,7 @@ div.tocify {
 <span class="dt">id =</span> <span class="st">&quot;BRASS&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;BRASS&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;brass.pl&quot;</span>,
+<span class="dt">baseCommand =</span> <span class="st">&quot;CPU=`grep -c ^processor /proc/cpuinfo` &amp;&amp; brass.pl -j 4 -k 4 -c $CPU -s HUMAN -as GRCh37 -pr WGS -pl ILLUMINA -d brass-ucscHiDepth_0.01_mrg1000_no_exon_coreChrs.bed.gz -f brass-brass_np.groups.gz -g_cache vagrent_Homo_sapiens.GRCh37.75.vagrent.cache.gz -vi brass-viral.1.1.genomic.fa -mi brass-all_ncbi_bacteria.20150703 -b brass-hs37d5_500bp_windows.gc.bed.gz -ct brass-Human.GRCh37.CentTelo.tsv -o ./brass_output&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
@@ -965,32 +987,17 @@ div.tocify {
 <div id="base-command-7" class="section level2">
 <h2>base command</h2>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
-<span class="co"># annotate pindel</span>
-<span class="kw">rm</span> -f /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/pindel/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>.annot.vcf.gz*
-<span class="kw">AnnotateVcf.pl</span> -t -c <span class="ot">$REF_BASE</span>/vagrent/vagrent.cache.gz
-<span class="kw">-i</span> /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/pindel/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>.flagged.vcf.gz
-<span class="kw">-o</span> /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/pindel/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>.annot.vcf
-
-<span class="co"># annotate caveman</span>
-<span class="kw">rm</span> 
-<span class="kw">-f</span> /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/caveman/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>.annot.muts.vcf.gz*
-<span class="kw">set</span> <span class="kw">-x</span>
 <span class="kw">AnnotateVcf.pl</span> 
+<span class="kw">-i</span> [VCF input from pindel or caveman]
 <span class="kw">-t</span> 
-<span class="kw">-c</span> <span class="ot">$REF_BASE</span>/vagrent/vagrent.cache.gz \
--i /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/caveman/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>.flagged.muts.vcf.gz \
--o /datastore/output/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>/caveman/<span class="ot">${NAME_MT}</span>_vs_<span class="ot">${NAME_WT}</span>.annot.muts.vcf
-<span class="kw">set</span> <span class="kw">+x</span></code></pre></div>
+<span class="kw">-c</span> vagrent_Homo_sapiens.GRCh37.75.vagrent.cache.gz
+<span class="kw">-o</span> annotated.muts.vcf</code></pre></div>
 <p><br><br><br><br></p>
 </div>
 <div id="docker-7" class="section level2">
 <h2>docker</h2>
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
-</div>
-<div id="arguments-6" class="section level2">
-<h2>arguments</h2>
-<p>No argument added yet</p>
 </div>
 <div id="app-ports-7" class="section level2 tabset tabset-fade tabset-tabs">
 <h2>App ports</h2>
@@ -1001,7 +1008,6 @@ div.tocify {
 <span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;vcf&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;vcf&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;vcf prep annotation&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-i&quot;</span>),
 
 <span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;vagrent_cahce&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;vagrent_cache&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;vagrent_cahce&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-c&quot;</span>)
-
 
 )</code></pre></div>
 </div>
@@ -1019,7 +1025,7 @@ div.tocify {
 <span class="dt">description =</span> <span class="st">&quot;annotated vcf&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#vcf&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.annot.muts.vcf</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*annotated.vcf</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
   
 )</code></pre></div>
 </div>
@@ -1032,7 +1038,7 @@ div.tocify {
 <span class="dt">id =</span> <span class="st">&quot;cgp_annotate_vcf&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;CGP Annotate VCFs&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;AnnotateVcf.pl&quot;</span>,
+<span class="dt">baseCommand =</span> <span class="st">&quot;AnnotateVcf.pl -t -c vagrent_Homo_sapiens.GRCh37.75.vagrent.cache.gz -o annotated.muts.vcf&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
@@ -1042,8 +1048,38 @@ div.tocify {
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;cgp_annotate_vcf&quot;</span>, tool)</code></pre></div>
 </div>
 </div>
+<div id="notes-1" class="section level2">
+<h2>notes</h2>
+<pre><code>
+# annotate pindel
+
+AnnotateVcf.pl 
+-t 
+-c $REF_BASE/vagrent/vagrent.cache.gz
+-i /datastore/output/${NAME_MT}_vs_${NAME_WT}/pindel/${NAME_MT}_vs_${NAME_WT}.flagged.vcf.gz
+-o /datastore/output/${NAME_MT}_vs_${NAME_WT}/pindel/${NAME_MT}_vs_${NAME_WT}.annot.vcf
+
+# annotate caveman
+
+AnnotateVcf.pl 
+-t 
+-c $REF_BASE/vagrent/vagrent.cache.gz \
+-i /datastore/output/${NAME_MT}_vs_${NAME_WT}/caveman/${NAME_MT}_vs_${NAME_WT}.flagged.muts.vcf.gz
+-o /datastore/output/${NAME_MT}_vs_${NAME_WT}/c.annot.muts.vcf
+</code></pre>
+</div>
 </div>
 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-82652476-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
 
 
 </div>

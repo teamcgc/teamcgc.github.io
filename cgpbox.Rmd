@@ -20,7 +20,7 @@ opts_chunk$set(cache=FALSE, tidy=FALSE)
 
 https://github.com/cancerit/cgpbox
 
-This is a repacking of the cgpbox pipeline to allow for parellization via the rabix executor and descriptions of the tools included by commmon workflow language.
+This is a repackaging of the cgpbox pipeline to allow for parellization via the rabix executor and descriptions of the tools included by commmon workflow language.
 
 <p><img src="images/cwlbox_wf_graph.png" width="1000" /></p>
 
