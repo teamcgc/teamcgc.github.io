@@ -16,6 +16,6 @@ output:
   html_document:
     theme: cosmo
     highlight: pygments
-  include:
+    include:
       after_body: _footer.html
 output_dir: "."
