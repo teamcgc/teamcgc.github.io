@@ -87,9 +87,5 @@ This is a repackaging of the cgpbox pipeline to allow for parellization via the 
 
 # CGC Batch Task Launcher
 
-```{r, echo=FALSE}
-
-include_app("https://teamcgc.shinyapps.io/cgpbox_launcher/")
-
-```
+<iframe src="https://teamcgc.shinyapps.io/cgc_cgpbox_launcher/" style="border: none; width: 900px; height: 600px"></iframe>
 
