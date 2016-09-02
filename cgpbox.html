@@ -210,7 +210,7 @@ $(document).ready(function ()  {
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
     };
-    options.showAndHide = false;
+    options.showAndHide = true;
     options.smoothScroll = false;
 
     // tocify
@@ -272,13 +272,6 @@ div.tocify {
   border-radius: 0px;
 }
 
-.tocify-subheader {
-  display: inline;
-}
-.tocify-subheader .tocify-item {
-  font-size: 0.95em;
-  padding-left: 10px;
-}
 
 </style>
 
@@ -345,80 +338,93 @@ div.tocify {
 </div>
 
 
+<div id="workflow-graph" class="section level1">
+<h1>Workflow Graph</h1>
 <p><a href="https://github.com/cancerit/cgpbox" class="uri">https://github.com/cancerit/cgpbox</a></p>
 <p>This is a repackaging of the cgpbox pipeline to allow for parellization via the rabix executor and descriptions of the tools included by commmon workflow language.</p>
 <p>
 <img src="images/cwlbox_wf_graph.png" width="1000" />
 </p>
 <p><br><br></p>
-<div id="cgp-bam-stats" class="section level1 tabset tabset-fade tabset-tabs">
-<h1>1. CGP Bam Stats</h1>
+</div>
+<div id="descriptions-of-individual-tools" class="section level1">
+<h1>Descriptions of Individual Tools</h1>
+<div id="cgp-bam-stats" class="section level2 tabset tabset-fade tabset-tabs">
+<h2>1. CGP Bam Stats</h2>
 <hr>
 <p>Generates useful stats on the wildtype and mutant tumour bams that will be used in the pipeline.</p>
-<div id="base-command" class="section level2">
-<h2>base command</h2>
+<div id="base-command" class="section level3">
+<h3>base command</h3>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
 <span class="kw">bam_stats</span> -i <span class="ot">$BAM_MT_TMP</span> -o <span class="ot">$BAM_MT_TMP</span>.bas</code></pre></div>
 <p><br><br><br><br></p>
 </div>
-<div id="docker" class="section level2">
-<h2>docker</h2>
+<div id="docker" class="section level3">
+<h3>docker</h3>
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="app-ports" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>App ports</h2>
-<div id="inputs" class="section level3">
-<h3>Inputs</h3>
+<div id="app-ports" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>App ports</h3>
+<div id="inputs" class="section level4">
+<h4>Inputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
 <span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either wildtype or tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-i&quot;</span>)
 
 )</code></pre></div>
 </div>
-<div id="outputs" class="section level3">
-<h3>Outputs</h3>
+<div id="arguments" class="section level4">
+<h4>arguments</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span>(<span class="kw">CCBList</span>(
+  
+<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">2</span>, <span class="dt">prefix =</span> <span class="st">&quot;-o&quot;</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;{return $job.inputs.bam.name + </span><span class="ch">\&quot;</span><span class="st">.bas</span><span class="ch">\&quot;</span><span class="st">}&quot;</span>)),
+  
+<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">3</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&amp;&amp; ls -lR </span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+  
+))</code></pre></div>
+</div>
+<div id="outputs" class="section level4">
+<h4>Outputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs =<span class="st"> </span><span class="kw">list</span>(
 
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;std_out&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;std_out&quot;</span>, 
 <span class="dt">description =</span> <span class="st">&quot;standard output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
 <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
-<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
-  
-<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;bas&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam stat output&quot;</span>, 
+<span class="dt">glob =</span><span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">std.out</span><span class="ch">\&quot;</span><span class="st">&quot;</span>),
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;bam_statistics&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam stat output&quot;</span>, 
 <span class="dt">description =</span> <span class="st">&quot;bam stat output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
 <span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.bas</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
-  
 )</code></pre></div>
 </div>
 </div>
-<div id="define-tool-object-and-push-to-platform" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>Define Tool Object and Push to Platform</h2>
-<div id="tool-object" class="section level3">
-<h3>Tool object</h3>
+<div id="define-tool-object-and-push-to-platform" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>Define Tool Object and Push to Platform</h3>
+<div id="tool-object" class="section level4">
+<h4>Tool object</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tool &lt;-<span class="st"> </span><span class="kw">Tool</span>(
 <span class="dt">id =</span> <span class="st">&quot;bam-stats&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;CGP bam stats&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;bam_stats -o bam_file.bas&quot;</span>,
+<span class="dt">baseCommand =</span> <span class="st">&quot;bam_stats&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
+<span class="dt">arguments =</span> arguments,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
 </div>
-<div id="push-app-to-sbg-platform" class="section level3">
-<h3>Push app to sbg platform</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;bam-stats&quot;</span>, tool)</code></pre></div>
+<div id="push-app-to-sbg-platform" class="section level4">
+<h4>Push app to sbg platform</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">project$<span class="kw">app_add</span>(<span class="st">&quot;bam-stats&quot;</span>, tool)</code></pre></div>
 </div>
 </div>
 </div>
-<div id="cgp-genotype-check" class="section level1 tabset tabset-fade tabset-tabs">
-<h1>2. CGP Genotype Check</h1>
+<div id="cgp-genotype-check" class="section level2 tabset tabset-fade tabset-tabs">
+<h2>2. CGP Genotype Check</h2>
 <hr>
-<div id="base-command-1" class="section level2">
-<h2>base command</h2>
+<div id="base-command-1" class="section level3">
+<h3>base command</h3>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
 <span class="kw">compareBamGenotypes.pl</span> \
 -o /datastore/output/<span class="ot">$NAME_WT</span>/genotyped \
@@ -427,23 +433,15 @@ div.tocify {
 -tb <span class="ot">$BAM_MT_TMP</span> \</code></pre></div>
 <p><br><br><br><br></p>
 </div>
-<div id="docker-1" class="section level2">
-<h2>docker</h2>
+<div id="docker-1" class="section level3">
+<h3>docker</h3>
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="arguments" class="section level2">
-<h2>arguments</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">list</span>(
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either wildtype or tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-i&quot;</span>)
-
-)</code></pre></div>
-</div>
-<div id="app-ports-1" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>App ports</h2>
-<div id="inputs-1" class="section level3">
-<h3>Inputs</h3>
+<div id="app-ports-1" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>App ports</h3>
+<div id="inputs-1" class="section level4">
+<h4>Inputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
 <span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;normal wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-nb&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>)),
@@ -452,18 +450,21 @@ div.tocify {
   
 )</code></pre></div>
 </div>
-<div id="outputs-1" class="section level3">
-<h3>Outputs</h3>
+<div id="arguments-1" class="section level4">
+<h4>arguments</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">CCBList</span>(<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">99</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&amp;&amp; ls -lR</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)))</code></pre></div>
+</div>
+<div id="outputs-1" class="section level4">
+<h4>Outputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs =<span class="st"> </span><span class="kw">list</span>(
 
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;std_out&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;std_out&quot;</span>, 
 <span class="dt">description =</span> <span class="st">&quot;standard output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
 <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
-<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
+<span class="dt">glob =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">std.out</span><span class="ch">\&quot;</span><span class="st">&quot;</span>),
   
-<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;result&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;genotype comparison&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;genotype comarison results&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;genotype_comparison_results&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;genotype comparison results&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;genotype comarison results&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#tumour_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
 <span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">genotype_check/*.json</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
@@ -471,10 +472,10 @@ div.tocify {
 )</code></pre></div>
 </div>
 </div>
-<div id="define-tool-object-and-push-to-platform-1" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>Define Tool Object and Push to Platform</h2>
-<div id="tool-object-1" class="section level3">
-<h3>Tool object</h3>
+<div id="define-tool-object-and-push-to-platform-1" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>Define Tool Object and Push to Platform</h3>
+<div id="tool-object-1" class="section level4">
+<h4>Tool object</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tool &lt;-<span class="st"> </span><span class="kw">Tool</span>(
 <span class="dt">id =</span> <span class="st">&quot;genotype-check&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;compare bam genotypes&quot;</span>,
@@ -482,19 +483,24 @@ div.tocify {
 <span class="dt">baseCommand =</span> <span class="st">&quot;compareBamGenotypes.pl -o genotype_check -j genotype_check/genotype_check_result.json&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
+<span class="dt">argument =</span> arguments,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
 </div>
-<div id="push-app-to-sbg-platform-1" class="section level3">
-<h3>Push app to sbg platform</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;genotype-check&quot;</span>, tool)</code></pre></div>
+<div id="make-cwl-file" class="section level4">
+<h4>Make cwl file</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write</span>(tool$<span class="kw">toJSON</span>(<span class="dt">pretty =</span> <span class="ot">TRUE</span>), <span class="st">&quot;genotype_check.json&quot;</span>)</code></pre></div>
+</div>
+<div id="push-app-to-sbg-platform-1" class="section level4">
+<h4>Push app to sbg platform</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">project$<span class="kw">app_add</span>(<span class="st">&quot;genotype-check&quot;</span>, tool)</code></pre></div>
 </div>
 </div>
 </div>
-<div id="verify-bams" class="section level1 tabset tabset-fade tabset-tabs">
-<h1>3. Verify Bams</h1>
+<div id="verify-bams" class="section level2 tabset tabset-fade tabset-tabs">
+<h2>3. Verify Bams</h2>
 <hr>
-<div id="base-command-2" class="section level2">
-<h2>base command</h2>
+<div id="base-command-2" class="section level3">
+<h3>base command</h3>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
 <span class="kw">verifyBamHomChk.pl</span>
 <span class="kw">-b</span> [bam file]
@@ -504,15 +510,15 @@ div.tocify {
 <span class="kw">-j</span> result.json</code></pre></div>
 <p><br><br><br><br></p>
 </div>
-<div id="docker-2" class="section level2">
-<h2>docker</h2>
+<div id="docker-2" class="section level3">
+<h3>docker</h3>
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="app-ports-2" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>App ports</h2>
-<div id="inputs-2" class="section level3">
-<h3>Inputs</h3>
+<div id="app-ports-2" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>App ports</h3>
+<div id="inputs-2" class="section level4">
+<h4>Inputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
 <span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either normal wildtype or tumour mutatantbam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-b&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>)),
@@ -521,8 +527,12 @@ div.tocify {
 
 )</code></pre></div>
 </div>
-<div id="outputs-2" class="section level3">
-<h3>Outputs</h3>
+<div id="arguments-2" class="section level4">
+<h4>arguments</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">CCBList</span>(<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">99</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&amp;&amp; ls -lR</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)))</code></pre></div>
+</div>
+<div id="outputs-2" class="section level4">
+<h4>Outputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs =<span class="st"> </span><span class="kw">list</span>(
 
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;std_out&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;std_out&quot;</span>, 
@@ -540,10 +550,10 @@ div.tocify {
 )</code></pre></div>
 </div>
 </div>
-<div id="define-tool-object-and-push-to-platform-2" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>Define Tool Object and Push to Platform</h2>
-<div id="tool-object-2" class="section level3">
-<h3>Tool object</h3>
+<div id="define-tool-object-and-push-to-platform-2" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>Define Tool Object and Push to Platform</h3>
+<div id="tool-object-2" class="section level4">
+<h4>Tool object</h4>
 <p>need to add some logic for -a adjusted copy number because it is only needed if it is the tumour sample.</p>
 <pre><code>-a /datastore/output/${NAME_MT}_vs_${NAME_WT}/ascat/${NAME_MT}.copynumber.caveman.csv
 
@@ -559,22 +569,21 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
 <span class="dt">baseCommand =</span> <span class="st">&quot;verifyBamHomChk.pl -d 25 -o verify_bam -j verify_bam/verify_bam_result.json&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
-<span class="dt">inputs =</span> inputs,
-<span class="dt">outputs =</span> outputs)</code></pre></div>
+<span class="dt">inputs =</span> inputs, <span class="dt">arguments =</span> arguments, <span class="dt">outputs =</span> outputs)</code></pre></div>
 </div>
-<div id="push-app-to-sbg-platform-2" class="section level3">
-<h3>Push app to sbg platform</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;verify_bams&quot;</span>, tool)</code></pre></div>
-</div>
+<div id="push-app-to-sbg-platform-2" class="section level4">
+<h4>Push app to sbg platform</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">project$<span class="kw">app_add</span>(<span class="st">&quot;verify_bams&quot;</span>, tool)</code></pre></div>
 </div>
 </div>
-<div id="ascat" class="section level1 tabset tabset-fade tabset-tabs">
-<h1>4. ASCAT</h1>
+</div>
+<div id="ascat" class="section level2 tabset tabset-fade tabset-tabs">
+<h2>4. ASCAT</h2>
 <hr>
 <p>Somatic copy number analysis using paired end wholegenome sequencing</p>
 <p><a href="https://github.com/cancerit/ascatNgs" class="uri">https://github.com/cancerit/ascatNgs</a></p>
-<div id="base-command-3" class="section level2">
-<h2>base command</h2>
+<div id="base-command-3" class="section level3">
+<h3>base command</h3>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
 <span class="kw">ascat.pl</span>
 <span class="kw">-t</span> [tumour bam]
@@ -590,22 +599,22 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
 <span class="kw">-g</span> L
 <span class="kw">-o</span> ./ascat_output</code></pre></div>
 </div>
-<div id="prep-ascat-for-caveman" class="section level2">
-<h2>Prep ASCAT for caveman</h2>
+<div id="prep-ascat-for-caveman" class="section level3">
+<h3>Prep ASCAT for caveman</h3>
 <pre><code>
 &amp;&amp; perl -ne &#39;@F=(split q{,}, $_)[1,2,3,4]; $F[1]-1; print join(&quot;\t&quot;,@F).&quot;\n&quot;;&#39; &lt; copynumber.caveman.csv &gt; ./normal_cn.bed &amp;&amp; perl -ne &#39;@F=(split q{,}, $_)[1,2,3,6]; $F[1]-1; print join(&quot;\t&quot;,@F).&quot;\n&quot;;&#39; &lt; copynumber.caveman.csv &gt; ./tumour_cn.bed
 </code></pre>
 <p><br><br><br><br></p>
 </div>
-<div id="docker-3" class="section level2">
-<h2>docker</h2>
+<div id="docker-3" class="section level3">
+<h3>docker</h3>
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="app-ports-3" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>App ports</h2>
-<div id="inputs-3" class="section level3">
-<h3>Inputs</h3>
+<div id="app-ports-3" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>App ports</h3>
+<div id="inputs-3" class="section level4">
+<h4>Inputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
 <span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;mutant tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>),
@@ -618,15 +627,18 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
 
 )</code></pre></div>
 </div>
-<div id="outputs-3" class="section level3">
-<h3>Outputs</h3>
+<div id="arguments-3" class="section level4">
+<h4>arguments</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">CCBList</span>(<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">99</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&amp;&amp; ls -lR</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)))</code></pre></div>
+</div>
+<div id="outputs-3" class="section level4">
+<h4>Outputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs =<span class="st"> </span><span class="kw">list</span>(
 
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;std_out&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;std_out&quot;</span>, 
 <span class="dt">description =</span> <span class="st">&quot;standard output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
 <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
-<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
+<span class="dt">glob =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">std.out</span><span class="ch">\&quot;</span><span class="st">&quot;</span>),
   
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;ascat_statistics&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;ascat_statistics&quot;</span>, 
 <span class="dt">description =</span> <span class="st">&quot;ascat_statistics&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
@@ -634,29 +646,22 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
 <span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">ascat_output/*.samplestatistics.txt</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
   
-<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_copy_number_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_copy_number_bed&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;tumour_copy_number_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
-<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#tumour_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
-<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">tumour_cn.bed</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
-  
-<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;normal_copy_number_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_copy_number_bed&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;normal_copy_number_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;copynumber_caveman&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;copynumber_caveman&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;copy_number_caveman&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">normal_cn.bed</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
-
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">ascat_output/*copynumber.caveman.csv</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
 )</code></pre></div>
 </div>
 </div>
-<div id="add-on-scripts" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>Add on scripts</h2>
+<div id="add-on-scripts" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>Add on scripts</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">prep_for_caveman_sh =<span class="st"> </span><span class="kw">fileDef</span>(<span class="dt">name =</span> <span class="st">&quot;prep_for_caveman.sh&quot;</span>, <span class="dt">content =</span> <span class="kw">read_file</span>(<span class="st">&quot;prep_for_caveman.sh&quot;</span>))</code></pre></div>
 </div>
-<div id="define-tool-object-and-push-to-platform-3" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>Define Tool Object and Push to Platform</h2>
-<div id="tool-object-3" class="section level3">
-<h3>Tool object</h3>
+<div id="define-tool-object-and-push-to-platform-3" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>Define Tool Object and Push to Platform</h3>
+<div id="tool-object-3" class="section level4">
+<h4>Tool object</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tool &lt;-<span class="st"> </span><span class="kw">Tool</span>(
 <span class="dt">id =</span> <span class="st">&quot;ASCAT&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;ASCAT&quot;</span>,
@@ -669,23 +674,23 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
 
 <span class="dt">inputs =</span> inputs,
   
-<span class="dt">arguments =</span> <span class="kw">CCBList</span>(<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">99</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&amp;&amp; sh prep_for_caveman.sh</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))), 
+<span class="dt">arguments =</span> arguments,
   
 <span class="dt">outputs =</span> outputs)</code></pre></div>
 </div>
-<div id="push-app-to-sbg-platform-3" class="section level3">
-<h3>Push app to sbg platform</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;ASCAT&quot;</span>, tool)</code></pre></div>
+<div id="push-app-to-sbg-platform-3" class="section level4">
+<h4>Push app to sbg platform</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">project$<span class="kw">app_add</span>(<span class="st">&quot;ASCAT&quot;</span>, tool)</code></pre></div>
 </div>
 </div>
 </div>
-<div id="cgp-pindel" class="section level1 tabset tabset-fade tabset-tabs">
-<h1>5. CGP Pindel</h1>
+<div id="cgp-pindel" class="section level2 tabset tabset-fade tabset-tabs">
+<h2>5. CGP Pindel</h2>
 <hr>
 <p>Cancer Genome Project Insertion/Deletion detection pipeline based around Pindel</p>
 <p><a href="https://github.com/cancerit/cgpPindel" class="uri">https://github.com/cancerit/cgpPindel</a></p>
-<div id="base-command-4" class="section level2">
-<h2>base command</h2>
+<div id="base-command-4" class="section level3">
+<h3>base command</h3>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
 <span class="kw">pindel.pl</span>
 <span class="kw">-t</span> [tumour mutant bam]
@@ -705,15 +710,15 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
 <span class="kw">-o</span> ./pindel_output</code></pre></div>
 <p><br><br><br><br></p>
 </div>
-<div id="docker-4" class="section level2">
-<h2>docker</h2>
+<div id="docker-4" class="section level3">
+<h3>docker</h3>
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="app-ports-4" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>App ports</h2>
-<div id="inputs-4" class="section level3">
-<h3>Inputs</h3>
+<div id="app-ports-4" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>App ports</h3>
+<div id="inputs-4" class="section level4">
+<h4>Inputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
 
@@ -727,15 +732,18 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
 
 )</code></pre></div>
 </div>
-<div id="outputs-4" class="section level3">
-<h3>Outputs</h3>
+<div id="arguments-4" class="section level4">
+<h4>arguments</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">CCBList</span>(<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">99</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&amp;&amp; ls -lR</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)))</code></pre></div>
+</div>
+<div id="outputs-4" class="section level4">
+<h4>Outputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs =<span class="st"> </span><span class="kw">list</span>(
 
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;std_out&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;std_out&quot;</span>, 
 <span class="dt">description =</span> <span class="st">&quot;standard output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
 <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
-<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
+<span class="dt">glob =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">std.out</span><span class="ch">\&quot;</span><span class="st">&quot;</span>),
   
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;pindel_germline_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;pindel_germline_bed&quot;</span>, 
 <span class="dt">description =</span> <span class="st">&quot;pindel_germline_bed output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
@@ -752,10 +760,10 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
 )</code></pre></div>
 </div>
 </div>
-<div id="define-tool-object-and-push-to-platform-4" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>Define Tool Object and Push to Platform</h2>
-<div id="tool-object-4" class="section level3">
-<h3>Tool object</h3>
+<div id="define-tool-object-and-push-to-platform-4" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>Define Tool Object and Push to Platform</h3>
+<div id="tool-object-4" class="section level4">
+<h4>Tool object</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tool &lt;-<span class="st"> </span><span class="kw">Tool</span>(
 <span class="dt">id =</span> <span class="st">&quot;pindel&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;pindel&quot;</span>,
@@ -763,21 +771,22 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
 <span class="dt">baseCommand =</span> <span class="st">&quot;CPU=`grep -c ^processor /proc/cpuinfo` &amp;&amp; pindel.pl -c $CPU -sp HUMAN -as GRCh37 -st WGS -e NC_007605,hs37d5,GL% -s pindel_simpleRepeats.bed.gz -f pindel_genomicRules.lst -g pindel_human.GRCh37.indelCoding.bed.gz -u pindel_pindel_np.gff3.gz -sf pindel_softRules.lst -b brass-ucscHiDepth_0.01_mrg1000_no_exon_coreChrs.bed.gz -o pindel_output&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
+<span class="dt">arguments =</span> arguments,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
 </div>
-<div id="push-app-to-sbg-platform-4" class="section level3">
-<h3>Push app to sbg platform</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;pindel&quot;</span>, tool)</code></pre></div>
+<div id="push-app-to-sbg-platform-4" class="section level4">
+<h4>Push app to sbg platform</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">project$<span class="kw">app_add</span>(<span class="st">&quot;pindel&quot;</span>, tool)</code></pre></div>
 </div>
 </div>
 </div>
-<div id="caveman" class="section level1 tabset tabset-fade tabset-tabs">
-<h1>6. CaVEMan</h1>
+<div id="caveman" class="section level2 tabset tabset-fade tabset-tabs">
+<h2>6. CaVEMan</h2>
 <hr>
 <p>CaVEMan actually needs the reference index and not the reference (?). But we can attach the reference index as a secondary file to the reference and find the path that way. Need to ask Erik about this.</p>
 <p>It uses outputs from Pindel and ASCAT.</p>
-<div id="base-command-5" class="section level2">
-<h2>base command</h2>
+<div id="base-command-5" class="section level3">
+<h3>base command</h3>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
 <span class="kw">caveman.pl</span>
 <span class="kw">-tb</span> [tumour mutant bam]
@@ -797,23 +806,15 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
 <span class="kw">-o</span> caveman_output</code></pre></div>
 <p><br><br><br><br></p>
 </div>
-<div id="docker-5" class="section level2">
-<h2>docker</h2>
+<div id="docker-5" class="section level3">
+<h3>docker</h3>
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="arguments-1" class="section level2">
-<h2>arguments</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">list</span>(
-  
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;either wildtype or tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-i&quot;</span>)
-
-)</code></pre></div>
-</div>
-<div id="app-ports-5" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>App ports</h2>
-<div id="inputs-5" class="section level3">
-<h3>Inputs</h3>
+<div id="app-ports-5" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>App ports</h3>
+<div id="inputs-5" class="section level4">
+<h4>Inputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
 
 <span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;mutant tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-tb&quot;</span>),
@@ -826,49 +827,67 @@ arguments = CCBList(CommandLineBinding(position = 2, prefix = &quot;-a&quot;, va
   
 <span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;ascat_tumour_cn_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;ascat_tumour_cn_bed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;ascat_tumour_cn_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-tc&quot;</span>),
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;ascat_normal_cn_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;ascat_normal_cn_bed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;ascat_normal_cn_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-nc&quot;</span>)
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;ascat_normal_cn_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;ascat_normal_cn_bed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;ascat_normal_cn_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-nc&quot;</span>),
+  
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;cgpbox_reference_files&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;cgpbox_reference_files&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;extracted reference files&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>)
 
 )</code></pre></div>
 </div>
-<div id="outputs-5" class="section level3">
-<h3>Outputs</h3>
+<div id="arguments-5" class="section level4">
+<h4>arguments</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">CCBList</span>(<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">99</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&amp;&amp; ls -lR</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)))</code></pre></div>
+</div>
+<div id="outputs-5" class="section level4">
+<h4>Outputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs =<span class="st"> </span><span class="kw">list</span>(
 
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;std_out&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;std_out&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;standard output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
+<span class="dt">description =</span> <span class="st">&quot;standard output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
 <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
-<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
+<span class="dt">glob =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">std.out</span><span class="ch">\&quot;</span><span class="st">&quot;</span>),
   
-<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;caveman_output&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;caveman_output&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;caveman_output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;caveman_snv_bed&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;caveman_snv_bed&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;caveman_snv_bed&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">caveman_output/*.bedpe</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">caveman_output/*bed</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
+  
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;caveman_all_vcf&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;caveman_all_vcf&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;caveman_all_vcf&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
+<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
+<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">caveman_output/*vcf.gz</span><span class="ch">\&quot;</span><span class="st">&quot;</span>), <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.tbi&quot;</span>)),
+  
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;caveman_flagged_muts_vcf&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;caveman_flagged_muts_vcf&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;caveman_flagged_muts_vcf&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
+<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
+<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
+<span class="dt">script =</span><span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">caveman_output/*flagged.muts.vcf.gz</span><span class="ch">\&quot;</span><span class="st">&quot;</span>), <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.tbi&quot;</span>))
   
 )</code></pre></div>
 </div>
 </div>
-<div id="define-tool-object-and-push-to-platform-5" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>Define Tool Object and Push to Platform</h2>
-<div id="tool-object-5" class="section level3">
-<h3>Tool object</h3>
+<div id="define-tool-object-and-push-to-platform-5" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>Define Tool Object and Push to Platform</h3>
+<div id="tool-object-5" class="section level4">
+<h4>Tool object</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tool &lt;-<span class="st"> </span><span class="kw">Tool</span>(
 <span class="dt">id =</span> <span class="st">&quot;CaVEMan&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;CaVEMan&quot;</span>,
-<span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
+<span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
 <span class="dt">baseCommand =</span> <span class="st">&quot;CPU=`grep -c ^processor /proc/cpuinfo` &amp;&amp; caveman.pl -t $CPU -s HUMAN -sa GRCh37 -st WGS -st genomic -ig caveman_ucscHiDepth_0.01_merge1000_no_exon.tsv -b ./ -u ./ -o caveman_output&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
+<span class="dt">arguments =</span> arguments,   
 <span class="dt">outputs =</span> outputs)</code></pre></div>
 </div>
-<div id="push-app-to-sbg-platform-5" class="section level3">
-<h3>Push app to sbg platform</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;CaVEMan&quot;</span>, tool)</code></pre></div>
+<div id="push-app-to-sbg-platform-5" class="section level4">
+<h4>Push app to sbg platform</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">project$<span class="kw">app_add</span>(<span class="st">&quot;CaVEMan&quot;</span>, tool)</code></pre></div>
 </div>
 </div>
-<div id="notes" class="section level2">
-<h2>notes</h2>
+<div id="notes" class="section level3">
+<h3>notes</h3>
 <p>needs these 3 inputs from other tools</p>
 <pre><code>-in /datastore/output/${NAME_MT}_vs_${NAME_WT}/pindel/${NAME_MT}_vs_${NAME_WT}.germline.bed  \
 -tc $TMP/tum.cn.bed \
@@ -884,13 +903,13 @@ set +x
 </code></pre>
 </div>
 </div>
-<div id="brass" class="section level1 tabset tabset-fade tabset-tabs">
-<h1>7. Brass</h1>
+<div id="brass" class="section level2 tabset tabset-fade tabset-tabs">
+<h2>7. Brass</h2>
 <hr>
 <p>Breakpoints via assembly - Identifies breaks and attempts to assemble rearrangements.</p>
 <p><a href="https://github.com/cancerit/BRASS" class="uri">https://github.com/cancerit/BRASS</a></p>
-<div id="base-command-6" class="section level2">
-<h2>base command</h2>
+<div id="base-command-6" class="section level3">
+<h3>base command</h3>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
 <span class="kw">brass.pl</span>
 <span class="kw">-t</span> [tumour bam]
@@ -914,27 +933,25 @@ set +x
 <span class="kw">-o</span> ./brass_output</code></pre></div>
 <p><br><br><br><br></p>
 </div>
-<div id="docker-6" class="section level2">
-<h2>docker</h2>
+<div id="docker-6" class="section level3">
+<h3>docker</h3>
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="arguments-2" class="section level2">
-<h2>arguments</h2>
-<p>No additional arguments</p>
-</div>
-<div id="app-ports-6" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>App ports</h2>
-<div id="inputs-6" class="section level3">
-<h3>Inputs</h3>
+<div id="app-ports-6" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>App ports</h3>
+<div id="inputs-6" class="section level4">
+<h4>Inputs</h4>
 <p>Need to add more inputs here.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;tumour_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;tumour bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;{return $self.name}&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-t&quot;</span>),
 
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-n&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;normal_bam&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;wildtype bam&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.bai&quot;</span>), <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;{return $self.name}&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-n&quot;</span>),
 
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-g&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;genome_reference&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.fai&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-g&quot;</span>),
+  
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;bam_stats&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;bam_stats&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;bam stats&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>),  
   
 <span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;ascat_sample_statistics&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;ascat_sample_statistics&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;ascat_sample_statistics&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-ss&quot;</span>),
   
@@ -942,114 +959,127 @@ set +x
   
 )</code></pre></div>
 </div>
-<div id="outputs-6" class="section level3">
-<h3>Outputs</h3>
+<div id="arguments-6" class="section level4">
+<h4>arguments</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span><span class="kw">CCBList</span>(<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">99</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&amp;&amp; ls -lR</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)))</code></pre></div>
+</div>
+<div id="outputs-6" class="section level4">
+<h4>Outputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs =<span class="st"> </span><span class="kw">list</span>(
 
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;std_out&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;std_out&quot;</span>, 
 <span class="dt">description =</span> <span class="st">&quot;standard output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
 <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
-<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
+<span class="dt">glob =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">std.out</span><span class="ch">\&quot;</span><span class="st">&quot;</span>),
   
-<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;brass_output&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;brass_sv_output&quot;</span>, 
-<span class="dt">description =</span> <span class="st">&quot;brass output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;brass_sv_bedpe&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;brass_sv_bedpe&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;brass_sv_bedpe&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
 <span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">brass_output/*</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">brass_output/*bedpe.gz</span><span class="ch">\&quot;</span><span class="st">&quot;</span>), <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.tbi&quot;</span>)),
+  
+<span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;brass_vcf&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;brass_vcf&quot;</span>, 
+<span class="dt">description =</span> <span class="st">&quot;brass_vcf&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
+<span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#normal_bam&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
+<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
+<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">brass_output/*vcf*</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
   
 )</code></pre></div>
 </div>
 </div>
-<div id="define-tool-object-and-push-to-platform-6" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>Define Tool Object and Push to Platform</h2>
-<div id="tool-object-6" class="section level3">
-<h3>Tool object</h3>
+<div id="define-tool-object-and-push-to-platform-6" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>Define Tool Object and Push to Platform</h3>
+<div id="tool-object-6" class="section level4">
+<h4>Tool object</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tool &lt;-<span class="st"> </span><span class="kw">Tool</span>(
 <span class="dt">id =</span> <span class="st">&quot;BRASS&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;BRASS&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
 <span class="dt">baseCommand =</span> <span class="st">&quot;CPU=`grep -c ^processor /proc/cpuinfo` &amp;&amp; brass.pl -j 4 -k 4 -c $CPU -s HUMAN -as GRCh37 -pr WGS -pl ILLUMINA -d brass-ucscHiDepth_0.01_mrg1000_no_exon_coreChrs.bed.gz -f brass-brass_np.groups.gz -g_cache vagrent_Homo_sapiens.GRCh37.75.vagrent.cache.gz -vi brass-viral.1.1.genomic.fa -mi brass-all_ncbi_bacteria.20150703 -b brass-hs37d5_500bp_windows.gc.bed.gz -ct brass-Human.GRCh37.CentTelo.tsv -o ./brass_output&quot;</span>,
-<span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
-<span class="dt">inputs =</span> inputs,
-<span class="dt">outputs =</span> outputs)</code></pre></div>
+<span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>, <span class="dt">inputs =</span> inputs, <span class="dt">arguments =</span> arguments, <span class="dt">outputs =</span> outputs)</code></pre></div>
 </div>
-<div id="push-app-to-sbg-platform-6" class="section level3">
-<h3>Push app to sbg platform</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;BRASS&quot;</span>, tool)</code></pre></div>
+<div id="push-app-to-sbg-platform-6" class="section level4">
+<h4>Push app to sbg platform</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">project$<span class="kw">app_add</span>(<span class="st">&quot;BRASS&quot;</span>, tool)</code></pre></div>
 </div>
 </div>
 </div>
-<div id="cgp-annotate-vcf" class="section level1 tabset tabset-fade tabset-tabs">
-<h1>8. CGP Annotate VCF</h1>
+<div id="cgp-annotate-vcf" class="section level2 tabset tabset-fade tabset-tabs">
+<h2>8. CGP Annotate VCF</h2>
 <hr>
 <p>CGP Annotate</p>
-<div id="base-command-7" class="section level2">
-<h2>base command</h2>
+<div id="base-command-7" class="section level3">
+<h3>base command</h3>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash">
 <span class="kw">AnnotateVcf.pl</span> 
 <span class="kw">-i</span> [VCF input from pindel or caveman]
-<span class="kw">-t</span> 
 <span class="kw">-c</span> vagrent_Homo_sapiens.GRCh37.75.vagrent.cache.gz
 <span class="kw">-o</span> annotated.muts.vcf</code></pre></div>
 <p><br><br><br><br></p>
 </div>
-<div id="docker-7" class="section level2">
-<h2>docker</h2>
+<div id="docker-7" class="section level3">
+<h3>docker</h3>
 <p>The docker conatiner is</p>
 <p><code>cgrlab/cgpbox_dev:develop</code></p>
 </div>
-<div id="app-ports-7" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>App ports</h2>
-<div id="inputs-7" class="section level3">
-<h3>Inputs</h3>
+<div id="app-ports-7" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>App ports</h3>
+<div id="inputs-7" class="section level4">
+<h4>Inputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inputs =<span class="st"> </span><span class="kw">list</span>(
   
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;vcf&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;vcf&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;vcf prep annotation&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-i&quot;</span>),
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;vcf&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;vcf&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;vcf prep annotation&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">secondaryFiles =</span> <span class="kw">list</span>(<span class="st">&quot;.tbi&quot;</span>), <span class="dt">prefix =</span> <span class="st">&quot;-i&quot;</span>),
 
-<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;vagrent_cahce&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;vagrent_cache&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;vagrent_cahce&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>, <span class="dt">prefix =</span> <span class="st">&quot;-c&quot;</span>)
+<span class="kw">input</span>(<span class="dt">id =</span> <span class="st">&quot;cgpbox_reference_files&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;cgpbox_reference_files&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;extracted reference files&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>, <span class="dt">stageInput =</span> <span class="st">&quot;link&quot;</span>)
 
 )</code></pre></div>
 </div>
-<div id="outputs-7" class="section level3">
-<h3>Outputs</h3>
+<div id="arguments-7" class="section level4">
+<h4>arguments</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">arguments =<span class="st"> </span>arguments =<span class="st"> </span><span class="kw">CCBList</span>(<span class="kw">CommandLineBinding</span>(<span class="dt">position =</span> <span class="dv">99</span>, <span class="dt">valueFrom =</span> <span class="kw">list</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">&amp;&amp; ls -lR</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)))</code></pre></div>
+</div>
+<div id="outputs-7" class="section level4">
+<h4>Outputs</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs =<span class="st"> </span><span class="kw">list</span>(
 
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;std_out&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;std_out&quot;</span>, 
 <span class="dt">description =</span> <span class="st">&quot;standard output&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File...&quot;</span>,
 <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
-<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*.{out}</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)),
+<span class="dt">glob =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">std.out</span><span class="ch">\&quot;</span><span class="st">&quot;</span>),
   
 <span class="kw">output</span>(<span class="dt">id =</span> <span class="st">&quot;annotated_vcf&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;annotated_vcf&quot;</span>, 
 <span class="dt">description =</span> <span class="st">&quot;annotated vcf&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;File&quot;</span>,
 <span class="dt">inheritMetadataFrom =</span> <span class="st">&quot;#vcf&quot;</span>, <span class="dt">metadata =</span> <span class="kw">list</span>(<span class="dt">org =</span> <span class="st">&quot;cgp&quot;</span>),
-<span class="dt">glob =</span> <span class="kw">Expression</span>(<span class="dt">engine =</span> <span class="st">&quot;#cwl-js-engine&quot;</span>,
-<span class="dt">script =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*annotated.vcf</span><span class="ch">\&quot;</span><span class="st">&quot;</span>))
+<span class="dt">glob =</span> <span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">*vcf*</span><span class="ch">\&quot;</span><span class="st">&quot;</span>)
   
 )</code></pre></div>
 </div>
 </div>
-<div id="define-tool-object-and-push-to-platform-7" class="section level2 tabset tabset-fade tabset-tabs">
-<h2>Define Tool Object and Push to Platform</h2>
-<div id="tool-object-7" class="section level3">
-<h3>Tool object</h3>
+<div id="define-tool-object-and-push-to-platform-7" class="section level3 tabset tabset-fade tabset-tabs">
+<h3>Define Tool Object and Push to Platform</h3>
+<div id="tool-object-7" class="section level4">
+<h4>Tool object</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tool &lt;-<span class="st"> </span><span class="kw">Tool</span>(
 <span class="dt">id =</span> <span class="st">&quot;cgp_annotate_vcf&quot;</span>, 
 <span class="dt">label =</span> <span class="st">&quot;CGP Annotate VCFs&quot;</span>,
 <span class="dt">hints =</span> <span class="kw">requirements</span>(<span class="kw">docker</span>(<span class="dt">pull =</span> <span class="st">&quot;cgrlab/cgpbox_dev:develop&quot;</span>), <span class="kw">cpu</span>(<span class="dv">1</span>), <span class="kw">mem</span>(<span class="dv">1000</span>)),
-<span class="dt">baseCommand =</span> <span class="st">&quot;AnnotateVcf.pl -t -c vagrent_Homo_sapiens.GRCh37.75.vagrent.cache.gz -o annotated.muts.vcf&quot;</span>,
+<span class="dt">baseCommand =</span> <span class="st">&quot;AnnotateVcf.pl -c vagrent_Homo_sapiens.GRCh37.75.vagrent.cache.gz -o annotated.muts.vcf&quot;</span>,
 <span class="dt">stdout =</span> <span class="st">&quot;std.out&quot;</span>,
 <span class="dt">inputs =</span> inputs,
+<span class="dt">arguments =</span> arguments,
 <span class="dt">outputs =</span> outputs)</code></pre></div>
 </div>
-<div id="push-app-to-sbg-platform-7" class="section level3">
-<h3>Push app to sbg platform</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$<span class="kw">app_add</span>(<span class="st">&quot;cgp_annotate_vcf&quot;</span>, tool)</code></pre></div>
+<div id="make-cwl-file-1" class="section level4">
+<h4>Make cwl file</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write</span>(tool$<span class="kw">toJSON</span>(<span class="dt">pretty =</span> <span class="ot">TRUE</span>), <span class="st">&quot;cgp_annotate_vcf.json&quot;</span>)</code></pre></div>
+</div>
+<div id="push-app-to-sbg-platform-7" class="section level4">
+<h4>Push app to sbg platform</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">project$<span class="kw">app_add</span>(<span class="st">&quot;cgp_annotate_vcf&quot;</span>, tool)</code></pre></div>
 </div>
 </div>
-<div id="notes-1" class="section level2">
-<h2>notes</h2>
+<div id="notes-1" class="section level3">
+<h3>notes</h3>
 <pre><code>
 # annotate pindel
 
@@ -1068,6 +1098,12 @@ AnnotateVcf.pl
 -o /datastore/output/${NAME_MT}_vs_${NAME_WT}/c.annot.muts.vcf
 </code></pre>
 </div>
+</div>
+</div>
+<div id="cgc-batch-task-launcher" class="section level1">
+<h1>CGC Batch Task Launcher</h1>
+<iframe src="https://teamcgc.shinyapps.io/cgpbox_launcher/?showcase=0" width="672" height="400px">
+</iframe>
 </div>
 
 <script>

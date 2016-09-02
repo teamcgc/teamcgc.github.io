@@ -5,10 +5,9 @@ output:
   html_document:
     toc: true
     toc_float:
-      collapsed: false
+      collapsed: true
       smooth_scroll: false
 ---  
-
 
 ```{r include = FALSE}
 require(rmarkdown); require(knitr);
@@ -18,6 +17,8 @@ opts_chunk$set(cache=FALSE, tidy=FALSE)
 
 ```
 
+# Workflow Graph
+
 https://github.com/cancerit/cgpbox
 
 This is a repackaging of the cgpbox pipeline to allow for parellization via the rabix executor and descriptions of the tools included by commmon workflow language.
@@ -26,59 +27,69 @@ This is a repackaging of the cgpbox pipeline to allow for parellization via the 
 
 <br><br>
 
-# 1. CGP Bam Stats {.tabset .tabset-fade .tabset-tabs}
+# Descriptions of Individual Tools
 
-```{r child = '~/cgpbox-cwl/Rmarkdown/bam_stats/bam_stats.Rmd'}
+## 1. CGP Bam Stats {.tabset .tabset-fade .tabset-tabs}
 
-
-```
-
-# 2. CGP Genotype Check {.tabset .tabset-fade .tabset-tabs}
-
-```{r child = '~/cgpbox-cwl/Rmarkdown/genotype_check/genotype_check.Rmd'}
+```{r child = '~/cgpbox-cwl/Rmarkdown/bam_stats.Rmd'}
 
 
 ```
 
-# 3. Verify Bams {.tabset .tabset-fade .tabset-tabs}
+## 2. CGP Genotype Check {.tabset .tabset-fade .tabset-tabs}
 
-```{r child = '~/cgpbox-cwl/Rmarkdown/verify_bams/verify_bams.Rmd'}
-
-
-```
-
-# 4. ASCAT {.tabset .tabset-fade .tabset-tabs}
-
-```{r child = '~/cgpbox-cwl/Rmarkdown/ascat/ascat.Rmd'}
+```{r child = '~/cgpbox-cwl/Rmarkdown/genotype_check.Rmd'}
 
 
 ```
 
-# 5. CGP Pindel {.tabset .tabset-fade .tabset-tabs}
+## 3. Verify Bams {.tabset .tabset-fade .tabset-tabs}
 
-```{r child = '~/cgpbox-cwl/Rmarkdown/pindel/pindel.Rmd'}
-
-
-```
-
-# 6. CaVEMan {.tabset .tabset-fade .tabset-tabs}
-
-```{r child = '~/cgpbox-cwl/Rmarkdown/caveman/caveman.Rmd'}
+```{r child = '~/cgpbox-cwl/Rmarkdown/verify_bams.Rmd'}
 
 
 ```
 
-# 7. Brass {.tabset .tabset-fade .tabset-tabs}
+## 4. ASCAT {.tabset .tabset-fade .tabset-tabs}
 
-```{r child = '~/cgpbox-cwl/Rmarkdown/brass/brass.Rmd'}
+```{r child = '~/cgpbox-cwl/Rmarkdown/ascat.Rmd'}
 
 
 ```
 
-# 8. CGP Annotate VCF {.tabset .tabset-fade .tabset-tabs}
+## 5. CGP Pindel {.tabset .tabset-fade .tabset-tabs}
 
-```{r child = '~/cgpbox-cwl/Rmarkdown/cgp_annotate_vcf/cgp_annotate_vcf.Rmd'}
+```{r child = '~/cgpbox-cwl/Rmarkdown/pindel.Rmd'}
 
+
+```
+
+## 6. CaVEMan {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/caveman.Rmd'}
+
+
+```
+
+## 7. Brass {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/brass.Rmd'}
+
+
+```
+
+## 8. CGP Annotate VCF {.tabset .tabset-fade .tabset-tabs}
+
+```{r child = '~/cgpbox-cwl/Rmarkdown/cgp_annotate_vcf.Rmd'}
+
+
+```
+
+# CGC Batch Task Launcher
+
+```{r, echo=FALSE}
+
+include_app("https://teamcgc.shinyapps.io/cgpbox_launcher/")
 
 ```
 
